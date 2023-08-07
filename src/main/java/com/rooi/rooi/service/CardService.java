@@ -19,14 +19,15 @@ public class CardService {
         cardRepository.save(card);
     }
 
-    // 카드 수정 APi
+    // 카드 수정 API
     public void updateCard(Long id, CardRequestDto cardRequestDto) {
         Card card = cardRepository.findById(id).orElseThrow(() -> new NullPointerException("Could Not Found Card"));
         card.update(cardRequestDto);
 
+        cardRepository.save(card);
     }
 
-    // 카드 삭제 APi
+    // 카드 삭제 API
     public void deleteCard(Long id) {
         Card card = cardRepository.findById(id).orElseThrow(() -> new NullPointerException("Could Not Found Card"));
         cardRepository.delete(card);
