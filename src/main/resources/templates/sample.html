@@ -94,7 +94,7 @@
   <div class="sidebar-buttons">
     <button onclick="inviteMembers()">Invite Members</button>
     <button onclick="manageMembers()">Manage Members</button>
-    <button onclick="addBoard()">Add Board</button>
+    <button onclick="addColumn()">Add Board</button>
   </div>
 </div>
 <div class="topbar">
@@ -109,31 +109,16 @@
     <div class="list">
       <div class="list-title">
         <span>To Do</span>
-        <div class="delete-board-btn" onclick="deleteBoard(this)">x</div>
+        <div class="delete-board-btn" onclick="deleteColumn(this)">x</div>
       </div>
       <div class="card">Task 1</div>
       <div class="card">Task 2</div>
       <div class="add-task-btn" onclick="addTask(this)">+</div>
     </div>
-    <div class="list">
-      <div class="list-title">
-        <span>In Progress</span>
-        <div class="delete-board-btn" onclick="deleteBoard(this)">x</div>
-      </div>
-      <div class="card">Task 3</div>
-      <div class="add-task-btn" onclick="addTask(this)">+</div>
-    </div>
-    <div class="list">
-      <div class="list-title">
-        <span>Done</span>
-        <div class="delete-board-btn" onclick="deleteBoard(this)">x</div>
-      </div>
-      <div class="card">Task 4</div>
-      <div class="card">Task 5</div>
-      <div class="add-task-btn" onclick="addTask(this)">+</div>
-    </div>
   </div>
 </div>
+<!--로그아웃 구현 스크립트-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
 <script>
   function inviteMembers() {
     // Implement your invite members logic here
@@ -144,14 +129,16 @@
   }
 
   function logout() {
-    // Implement your logout logic here
+    // 토큰 삭제
+    Cookies.remove('Authorization', { path: '/' });
+    window.location.href = "/api/user/login-page";
   }
 
   function openProfile() {
     // Implement your profile logic here
   }
 
-  function deleteBoard(button) {
+  function deleteColumn(button) {
     const list = button.parentNode.parentNode;
     list.remove();
   }
@@ -164,19 +151,19 @@
     list.insertBefore(newTask, button);
   }
 
-  function addBoard() {
-    const boardContainer = document.querySelector('.board');
-    const newBoard = document.createElement('div');
-    newBoard.className = 'list';
-    newBoard.innerHTML = `
+  function addColumn() {
+    const columnContainer = document.querySelector('.board');
+    const newColumn = document.createElement('div');
+    newColumn.className = 'list';
+    newColumn.innerHTML = `
         <div class="list-title">
-          <span>New Board</span>
-          <div class="delete-board-btn" onclick="deleteBoard(this)">x</div>
+          <span>New Column</span>
+          <div class="delete-board-btn" onclick="deleteColumn(this)">x</div>
         </div>
         <div class="card">New Task</div>
         <div class="add-task-btn" onclick="addTask(this)">+</div>
       `;
-    boardContainer.appendChild(newBoard);
+    columnContainer.appendChild(newColumn);
   }
 </script>
 </body>
