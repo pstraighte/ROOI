@@ -12,6 +12,7 @@ import lombok.Setter;
 @Table(name="Columns")
 public class Columns {
 
+
     @Id
     @GeneratedValue
     @Column(name ="columns")
@@ -19,8 +20,16 @@ public class Columns {
 
     private String title;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "board_id")
+    private Board board;
+
     public Columns(Board board, String title) {
-//        this.board = board;
+        this.board = board;
         this.title = title;
     }
 

@@ -23,17 +23,17 @@ public class ColumnsController {
         return columnsService.createColumns(columnsRequestDto,userDetails.getUser());
     }
 
-    @PutMapping("")
+    @PutMapping("/{columnsId}")
     public ColumnsResponseDto updateColumns (@PathVariable Long columnsId,@RequestBody ColumnsRequestDto columnsRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return columnsService.updateColumns(columnsId, columnsRequestDto,userDetails.getUser());
     }
 
-    @DeleteMapping("")
+    @DeleteMapping("/{columnsId}")
     public ResponseEntity<ApiResponseDto> deleteColumns(@PathVariable Long columnsId,@AuthenticationPrincipal UserDetailsImpl userDetails){
         try{
             columnsService.deleteColumns(columnsId, userDetails.getUser());
         } catch (IllegalArgumentException e){
-            return ResponseEntity.ok().body(new ApiResponseDto("컬럼을 찾을 수 없습니다", HttpStatus.OK.value()));
+            return ResponseEntity.ok().body(new ApiResponseDto("컬럼을 찾을 수 없습니다", HttpStatus.BAD_REQUEST.value()));
         }
 
     return ResponseEntity.ok().body(new ApiResponseDto("컬럼 삭제 성공", HttpStatus.OK.value()));
