@@ -36,4 +36,18 @@ public class CardController {
         return null;
     }
 
+    // 작업자 추가 API
+    @PostMapping("/card/worker")
+    public ResponseEntity<ApiresponseDto> addWorker() {
+        cardService.addWorker();
+        return null;
+    }
+
+    // 작업자 삭제 API
+    @DeleteMapping("/card/worker")
+    public ResponseEntity<ApiresponseDto> deleteWorker() {
+        cardService.deleteWorker();
+        return null;
+    }
+
 }

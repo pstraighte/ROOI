@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CardService {
+
     private final CardRepository cardRepository;
 
     // 카드 생성 API
@@ -33,4 +34,13 @@ public class CardService {
         cardRepository.delete(card);
     }
 
+    // 작업자 추가 API
+    public void addWorker() {
+
+    }
+
+    // 작업자 삭제 API
+    public void deleteWorker() {
+
+    }
 }
