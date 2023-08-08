@@ -35,12 +35,12 @@ public class CommentService {
             commentRepository.save(comment);
             return new CommentResponseDto(comment);
         }
-        public void deleteComment(Long id, User user) {
+        public CommentResponseDto deleteComment(Long id, User user) {
             Comment comment = commentRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다"));
             if (!comment.getUser().getId().equals(user.getId())) {
                 throw new RejectedExecutionException("작성자만 삭제 가능합니다");
             }
             commentRepository.delete(comment);
-
+return new CommentResponseDto();
         }
 }
