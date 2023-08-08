@@ -24,15 +24,20 @@ public class Card {
 //    @Column(name = "card_worker")
 //    private String worker;
 
-    public Card(CardRequestDto cardRequestDto) {
+    // 연관관계 맵핑
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="column_id")
+    private Columns columns;
+
+
+    public Card(Columns columns, CardRequestDto cardRequestDto) {
         this.title = cardRequestDto.getTitle();
         this.description = cardRequestDto.getDescription();
+        this.columns = columns;
     }
 
     public void update(CardRequestDto cardRequestDto) {
         this.title = cardRequestDto.getTitle();
         this.description = cardRequestDto.getDescription();
     }
-
-    // 연관관계 맵핑
 }

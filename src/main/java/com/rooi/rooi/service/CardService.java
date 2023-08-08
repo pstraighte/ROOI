@@ -2,7 +2,9 @@ package com.rooi.rooi.service;
 
 import com.rooi.rooi.dto.CardRequestDto;
 import com.rooi.rooi.entity.Card;
+import com.rooi.rooi.entity.Columns;
 import com.rooi.rooi.repository.CardRepository;
+import com.rooi.rooi.repository.ColumnsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,12 +13,14 @@ import org.springframework.stereotype.Service;
 public class CardService {
 
     private final CardRepository cardRepository;
+    private final ColumnsRepository columnsRepository;
 
     // 카드 생성 API
-    public void createCard(CardRequestDto cardRequestDto) {
+    public void createCard(Long columId, CardRequestDto cardRequestDto) {
         // columnId 필요
+        Columns columns = columnsRepository.findById(columId).orElseThrow(() -> new NullPointerException("Could Not Found Column"));
 
-        Card card = new Card(cardRequestDto);
+        Card card = new Card(columns, cardRequestDto);
         cardRepository.save(card);
     }
 
