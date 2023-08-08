@@ -14,9 +14,9 @@ public class Board extends Timestamped {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "user_id")
-//	private User user;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
+	private User user;
 
 	@Column(nullable = false)
 	private String title;
@@ -27,12 +27,11 @@ public class Board extends Timestamped {
 	@Column(name = "board_color")
 	private String boardColor;
 
-	// TODO : 생성자 user 추가
-	public Board(BoardRequestDto requestDto) {
+	public Board(BoardRequestDto requestDto, User user) {
 		this.title = requestDto.getTitle();
 		this.contents = requestDto.getContests();
 		this.boardColor = requestDto.getBoardColor();
-//		this.user = user;
+		this.user = user;
 	}
 
 	public void setTitle(String title) {
