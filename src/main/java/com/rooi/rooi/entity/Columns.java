@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Setter
 @Getter
 @Entity
@@ -27,6 +30,9 @@ public class Columns {
     @ManyToOne
     @JoinColumn(name = "board_id")
     private Board board;
+
+    @OneToMany(mappedBy = "columns")
+    private List<Card> cardList = new ArrayList<>();
 
     public Columns(Board board, String title) {
         this.board = board;
