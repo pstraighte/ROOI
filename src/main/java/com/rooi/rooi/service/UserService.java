@@ -1,6 +1,7 @@
 package com.rooi.rooi.service;
 
 import com.rooi.rooi.dto.LoginRequestDto;
+import com.rooi.rooi.dto.ProfileResponseDto;
 import com.rooi.rooi.dto.SignupRequestDto;
 import com.rooi.rooi.entity.User;
 import com.rooi.rooi.entity.UserRoleEnum;
@@ -31,6 +32,7 @@ public class UserService {
 
     public void signup(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
+        String introduce = requestDto.getIntroduce();
         String password = passwordEncoder.encode(requestDto.getPassword());
 
         // 회원 중복 확인
@@ -55,10 +57,17 @@ public class UserService {
             role = UserRoleEnum.ADMIN;
         }
 
+
+
         // 사용자 등록
-        User user = new User(username, password, email, role);
+        User user = new User(username, password, email, introduce, role);
         userRepository.save(user);
     }
+
+    public ProfileResponseDto getProfile(User user) {
+        return new ProfileResponseDto(user);
+    }
+
 
 //    필터에서 처리
 //    public void login(LoginRequestDto requestDto, HttpServletResponse res) {
