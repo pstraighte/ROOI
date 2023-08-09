@@ -93,6 +93,11 @@ public class BoardService {
 		User invitedUser = userRepository.findById(requestDto.getInviteUser()).orElseThrow(
 				() -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
 		);
+
+		if (permissionRepository.existsByBoardIdAndUserId(board.getId(), invitedUser.getId())) {
+			throw new IllegalArgumentException("이미 초대받은 사용자입니다.");
+		}
+
 		log.info("Service - 유저 확인 후 : " + invitedUser);
 
 		List<Permission> permissionList = permissionRepository.findAllByBoardId(board.getId());
