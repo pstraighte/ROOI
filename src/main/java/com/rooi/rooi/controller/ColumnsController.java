@@ -11,7 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/columns")
+@RestController
+@RequestMapping("/api/columns")
 @AllArgsConstructor
 public class ColumnsController {
 

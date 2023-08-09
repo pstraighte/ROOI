@@ -22,6 +22,7 @@ public class ColumnsService {
         Board board = boardRepository.findById(requestDto.getBoardId()).get();
 
         Columns columns = new Columns(board,requestDto.getTitle());
+        columns.setUser(user);
 
         columnsRepository.save(columns);
         return new ColumnsResponseDto(columns);

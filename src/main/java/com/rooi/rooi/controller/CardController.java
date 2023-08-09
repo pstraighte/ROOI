@@ -2,8 +2,10 @@ package com.rooi.rooi.controller;
 
 import com.rooi.rooi.dto.ApiResponseDto;
 import com.rooi.rooi.dto.CardRequestDto;
+import com.rooi.rooi.dto.CardResponseDto;
 import com.rooi.rooi.service.CardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,10 +16,13 @@ public class CardController {
     private final CardService cardService;
 
     // 카드 생성 API
-    @PostMapping("/{columId}/card")
-    public ResponseEntity<ApiResponseDto> createCard(@PathVariable Long columId, @RequestBody CardRequestDto cardRequestDto) {
-        cardService.createCard(columId, cardRequestDto);
-        return null;
+    @PostMapping("/{columnId}/card")
+    public ResponseEntity<CardResponseDto> createCard(@PathVariable Long columnId, @RequestBody CardRequestDto cardRequestDto) {
+        CardResponseDto cardResponseDto = cardService.createCard(columnId, cardRequestDto);
+        return new ResponseEntity<>(
+                cardResponseDto,
+                HttpStatus.CREATED
+        );
     }
 
     // 카드 조회 -> 컬럼에서 조회
@@ -26,14 +31,22 @@ public class CardController {
     @PutMapping("/card/{id}")
     public ResponseEntity<ApiResponseDto> updateCard(@PathVariable Long id, @RequestBody CardRequestDto cardRequestDto) {
         cardService.updateCard(id, cardRequestDto);
-        return null;
+        ApiResponseDto apiResponseDto = new ApiResponseDto("카드를 수정했습니다.", HttpStatus.OK.value());
+        return new ResponseEntity<>(
+                apiResponseDto,
+                HttpStatus.OK
+        );
     }
 
     // 카드 삭제 API
     @DeleteMapping("/card/{id}")
     public ResponseEntity<ApiResponseDto> deleteCard(@PathVariable Long id) {
         cardService.deleteCard(id);
-        return null;
+        ApiResponseDto apiResponseDto = new ApiResponseDto("카드를 삭제했습니다.", HttpStatus.OK.value());
+        return new ResponseEntity<>(
+                apiResponseDto,
+                HttpStatus.OK
+        );
     }
 
     // 작업자 추가 API

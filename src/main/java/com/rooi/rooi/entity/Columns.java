@@ -17,7 +17,7 @@ public class Columns {
 
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="columns")
     private Long id;
 
@@ -31,8 +31,10 @@ public class Columns {
     @JoinColumn(name = "board_id")
     private Board board;
 
-    @OneToMany(mappedBy = "columns")
+    @OneToMany(mappedBy = "columns",cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Card> cardList = new ArrayList<>();
+
+
 
     public Columns(Board board, String title) {
         this.board = board;

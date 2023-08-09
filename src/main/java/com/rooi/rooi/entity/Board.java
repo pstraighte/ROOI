@@ -21,6 +21,9 @@ public class Board extends Timestamped {
 	@JoinColumn(name = "user_id")
 	private User user;
 
+	@OneToMany(mappedBy = "board",cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private List<Columns> columnsList = new ArrayList<>();
+
 	@Column(nullable = false)
 	private String title;
 
