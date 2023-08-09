@@ -65,8 +65,8 @@ public class CardController {
 
     //카드 컬럼 이동
    @PutMapping("card/move/{id}/{columnId}")//카드id, 이동컬럼id
-    public ResponseEntity<ApiResponseDto> moveCard(@PathVariable Long id, @PathVariable Long columnId){
+    public void moveCard(@PathVariable Long id, @PathVariable Long columnId){
         cardService.moveCard(id, columnId) ;
-        return null;
+       ApiResponseDto apiResponseDto = new ApiResponseDto("카드를 이동했습니다.", HttpStatus.OK.value());
     }
 }
