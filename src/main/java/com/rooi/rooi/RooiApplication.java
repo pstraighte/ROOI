@@ -11,5 +11,4 @@ public class RooiApplication {
     public static void main(String[] args) {
         SpringApplication.run(RooiApplication.class, args);
     }
-
 }
