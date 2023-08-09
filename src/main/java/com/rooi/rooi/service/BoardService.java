@@ -53,7 +53,9 @@ public class BoardService {
 		if (isPermission(id, user.getId())) {
 			board.setTitle(requestDto.getTitle());
 			board.setContents(requestDto.getContents());
-			board.setBoardColor(requestDto.getBoardColor());
+			if (!(requestDto.getBoardColor() == null)) {
+				board.setBoardColor(requestDto.getBoardColor());
+			}
 			log.info("Service - 유저 검증 성공");
 		} else {
 			log.info("Service - 유저 검증 실패");
