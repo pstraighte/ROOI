@@ -1,6 +1,7 @@
 package com.rooi.rooi.service;
 
 import com.rooi.rooi.dto.CardRequestDto;
+import com.rooi.rooi.dto.CardResponseDto;
 import com.rooi.rooi.entity.Card;
 import com.rooi.rooi.entity.Columns;
 import com.rooi.rooi.repository.CardRepository;
@@ -16,12 +17,14 @@ public class CardService {
     private final ColumnsRepository columnsRepository;
 
     // 카드 생성 API
-    public void createCard(Long columId, CardRequestDto cardRequestDto) {
+    public CardResponseDto createCard(Long columnId, CardRequestDto cardRequestDto) {
         // columnId 필요
-        Columns columns = columnsRepository.findById(columId).orElseThrow(() -> new NullPointerException("Could Not Found Column"));
+        Columns columns = columnsRepository.findById(columnId).orElseThrow(() -> new NullPointerException("Could Not Found Column"));
 
         Card card = new Card(columns, cardRequestDto);
         cardRepository.save(card);
+
+        return new CardResponseDto(card);
     }
 
     // 카드 수정 API
