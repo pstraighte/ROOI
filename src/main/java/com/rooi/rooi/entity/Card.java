@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -30,6 +33,9 @@ public class Card {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="column_id")
     private Columns columns;
+
+    @OneToMany(mappedBy = "card",cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Comment> commentList = new ArrayList<>();
 
 
     public Card(Columns columns, CardRequestDto cardRequestDto) {
