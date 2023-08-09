@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Table(name = "board")
@@ -29,7 +32,7 @@ public class Board extends Timestamped {
 
 	public Board(BoardRequestDto requestDto, User user) {
 		this.title = requestDto.getTitle();
-		this.contents = requestDto.getContests();
+		this.contents = requestDto.getContents();
 		this.boardColor = requestDto.getBoardColor();
 		this.user = user;
 	}

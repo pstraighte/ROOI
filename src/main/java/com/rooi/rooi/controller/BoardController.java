@@ -3,6 +3,7 @@ package com.rooi.rooi.controller;
 import com.rooi.rooi.dto.ApiResponseDto;
 import com.rooi.rooi.dto.BoardRequestDto;
 import com.rooi.rooi.dto.BoardResponseDto;
+import com.rooi.rooi.dto.InviteRequestDto;
 import com.rooi.rooi.entity.Board;
 import com.rooi.rooi.security.UserDetailsImpl;
 import com.rooi.rooi.service.BoardService;
@@ -62,6 +63,20 @@ public class BoardController {
 			ApiResponseDto result = boardService.deleteBoard(id, userDetails.getUser());
 			return ResponseEntity.status(HttpStatus.OK).body(result);
 		} catch (IllegalArgumentException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
+		}
+	}
+
+	@GetMapping("/{id}/invite")
+	public ResponseEntity<?> inviteUser(@PathVariable Long id, @RequestBody InviteRequestDto requestDto,
+	                                    @AuthenticationPrincipal UserDetailsImpl userDetails) {
+		try {
+			log.info("Controller - inviteUser 메서드 진입");
+			ApiResponseDto result = boardService.inviteUser(id, requestDto, userDetails.getUser());
+			log.info("Controller - inviteUser 메서드 정상 처리");
+			return ResponseEntity.status(HttpStatus.OK).body(result);
+		} catch (IllegalArgumentException e) {
+			log.info("Controller - inviteUser 메서드 에러 처리");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
 		}
 	}
