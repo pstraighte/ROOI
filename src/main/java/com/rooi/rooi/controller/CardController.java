@@ -3,10 +3,13 @@ package com.rooi.rooi.controller;
 import com.rooi.rooi.dto.ApiResponseDto;
 import com.rooi.rooi.dto.CardRequestDto;
 import com.rooi.rooi.dto.CardResponseDto;
+import com.rooi.rooi.dto.WorkerRequestDto;
+import com.rooi.rooi.security.UserDetailsImpl;
 import com.rooi.rooi.service.CardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -50,17 +53,35 @@ public class CardController {
     }
 
     // 작업자 추가 API
-    @PostMapping("/card/worker")
-    public ResponseEntity<ApiResponseDto> addWorker() {
-        cardService.addWorker();
-        return null;
+    @PostMapping("/card/{cardId}/worker")
+    public ResponseEntity<ApiResponseDto> addWorker(@PathVariable Long cardId, @RequestBody WorkerRequestDto workerRequestDto) {
+        try {
+            cardService.addWorker(cardId, workerRequestDto);
+        } catch (NullPointerException | IllegalArgumentException e) {
+            ApiResponseDto apiResponseDto = new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<>(apiResponseDto, HttpStatus.BAD_REQUEST);
+        }
+        ApiResponseDto apiResponseDto = new ApiResponseDto("작업자를 추가했습니다.", HttpStatus.OK.value());
+        return new ResponseEntity<>(
+                apiResponseDto,
+                HttpStatus.OK
+        );
     }
 
     // 작업자 삭제 API
-    @DeleteMapping("/card/worker")
-    public ResponseEntity<ApiResponseDto> deleteWorker() {
-        cardService.deleteWorker();
-        return null;
+    @DeleteMapping("/card/{cardId}/worker")
+    public ResponseEntity<ApiResponseDto> deleteWorker(@PathVariable Long cardId, @RequestBody WorkerRequestDto workerRequestDto) {
+        try {
+            cardService.deleteWorker(cardId, workerRequestDto);
+        } catch (NullPointerException | IllegalArgumentException e) {
+            ApiResponseDto apiResponseDto = new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value());
+            return new ResponseEntity<>(apiResponseDto, HttpStatus.BAD_REQUEST);
+        }
+        ApiResponseDto apiResponseDto = new ApiResponseDto("작업자를 삭제했습니다.", HttpStatus.OK.value());
+        return new ResponseEntity<>(
+                apiResponseDto,
+                HttpStatus.OK
+        );
     }
 
 }
