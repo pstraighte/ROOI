@@ -69,12 +69,12 @@ public class BoardService {
 		Board board = findBoard(id);
 
 		log.info("Service - 유저 검증");
-		if (isPermission(id, user.getId())) {
+		if (board.getUser().getId().equals(user.getId())) {
 			boardRepository.delete(board);
 			log.info("Service - 유저 검증 성공");
 		} else {
 			log.info("Service - 유저 검증 실패");
-			throw new IllegalArgumentException("작성자와 관리자만 수정할 수 있습니다.");
+			throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
 		}
 		return new ApiResponseDto("보드 삭제 완료", HttpStatus.OK.value());
 	}
