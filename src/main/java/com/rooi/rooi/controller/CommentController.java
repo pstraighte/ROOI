@@ -16,7 +16,6 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("")   //댓글 작성
-
     public CommentResponseDto createComment(@RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return commentService.createComment(commentRequestDto, userDetails.getUser());
     }

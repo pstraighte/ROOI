@@ -41,6 +41,6 @@ public class CommentService {
                 throw new RejectedExecutionException("작성자만 삭제 가능합니다");
             }
             commentRepository.delete(comment);
-return new CommentResponseDto();
+            return new CommentResponseDto();
         }
 }
