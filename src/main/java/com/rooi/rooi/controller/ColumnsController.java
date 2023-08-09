@@ -12,7 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/columns")
+@RequestMapping("/api/columns")
 @AllArgsConstructor
 public class ColumnsController {
 

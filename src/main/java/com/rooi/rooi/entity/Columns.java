@@ -17,7 +17,7 @@ public class Columns {
 
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="columns")
     private Long id;
 
