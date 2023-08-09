@@ -2,10 +2,12 @@ package com.rooi.rooi.entity;
 
 import com.rooi.rooi.dto.CardRequestDto;
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
+@Getter
 @NoArgsConstructor
 @DynamicUpdate
 public class Card {
