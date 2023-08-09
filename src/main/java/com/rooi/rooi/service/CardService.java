@@ -2,6 +2,7 @@ package com.rooi.rooi.service;
 
 import com.rooi.rooi.dto.CardRequestDto;
 import com.rooi.rooi.dto.CardResponseDto;
+import com.rooi.rooi.dto.ColumnsRequestDto;
 import com.rooi.rooi.entity.Card;
 import com.rooi.rooi.entity.Columns;
 import com.rooi.rooi.repository.CardRepository;
@@ -49,5 +50,13 @@ public class CardService {
     // 작업자 삭제 API
     public void deleteWorker() {
 
+    }
+
+    // 카드>컬럼 이동
+    public void moveCard(Long id, Long columnId) {
+        Columns columns = columnsRepository.findById(columnId).orElseThrow(() -> new NullPointerException("Could Not Found Column"));
+        Card card = cardRepository.findById(id).orElseThrow(() -> new NullPointerException("Could Not Found Card"));
+        card.moveCard(columns);
+        cardRepository.save(card);
     }
 }

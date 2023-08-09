@@ -48,4 +48,8 @@ public class Card {
         this.title = cardRequestDto.getTitle();
         this.description = cardRequestDto.getDescription();
     }
+
+    public void moveCard(Columns columns) {
+        this.columns = columns;
+    }
 }
