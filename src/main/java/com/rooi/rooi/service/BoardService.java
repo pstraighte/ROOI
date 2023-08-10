@@ -41,7 +41,6 @@ public interface BoardService {
 	 * @param user 보드 수정 요청자
 	 * @return 생성된 보드 정보 반환(아이디, 제목, 설명, 색상)
 	 */
-	@Transactional
 	BoardResponseDto updateBoard(Long id, BoardRequestDto requestDto, User user);
 
 	/**
