@@ -115,13 +115,19 @@
       <div class="card">Task 2</div>
       <div class="add-task-btn" onclick="addTask(this)">+</div>
     </div>
+    <a id="sign-text" href="/api/user/signup">
+      SIGNUP
+    </a>
+    <a id="login-text" href="/api/user/login-page">
+      LOGIN
+    </a>
   </div>
 </div>
 <!--로그아웃 구현 스크립트-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
 <script>
   function inviteMembers() {
-    // Implement your invite members logic here
+    const popupWindow = window.open('inviteUser.html', 'Invite Members', 'width=600,height=400');
   }
 
   function manageMembers() {
