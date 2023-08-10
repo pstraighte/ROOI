@@ -18,6 +18,16 @@ public class ColumnsService {
     private final BoardRepository boardRepository;
 
 
+
+    public ColumnsResponseDto getColumns(Long columnsId) {
+        Columns columns = columnsRepository.findById(columnsId).orElseThrow(null);
+
+        if(columns != null) {
+            return new ColumnsResponseDto(columns);
+        }else {
+            return null;}
+    }
+
     public ColumnsResponseDto createColumns(ColumnsRequestDto requestDto, User user){
         Board board = boardRepository.findById(requestDto.getBoardId()).get();
 
@@ -46,4 +56,6 @@ public class ColumnsService {
         columnsRepository.delete(columns);
     }
 
-}
+
+    }
+

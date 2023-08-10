@@ -18,6 +18,17 @@ public class ColumnsController {
 
     private final ColumnsService columnsService;
 
+    // 컬럼 조회 API
+    @GetMapping("/{columnsId}")
+    public ResponseEntity<ColumnsResponseDto> getColumns(@PathVariable Long columnsId) {
+        ColumnsResponseDto columnsResponseDto = columnsService.getColumns(columnsId);
+        if (columnsResponseDto != null) {
+            return ResponseEntity.ok(columnsResponseDto);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
     @PostMapping("")
     public ColumnsResponseDto createColumns (@RequestBody ColumnsRequestDto columnsRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
