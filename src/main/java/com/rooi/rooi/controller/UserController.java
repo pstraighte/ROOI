@@ -30,7 +30,7 @@ public class UserController {
         return "login";
     }
 
-    @GetMapping("/user/signup")
+    @GetMapping("/user/signup-page")
     public String signupPage() {
         return "signup";
     }
