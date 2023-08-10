@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public class InviteRequestDto {
-	public Long inviteUser;
+	public String inviteUser;
 }

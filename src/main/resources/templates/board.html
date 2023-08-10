@@ -92,7 +92,7 @@
             });
 
             if (!response.ok) {
-                throw new Error('Board creation failed');
+                throw new Error('보드 생성 실패');
             }
 
             const newBoard = await response.json();
