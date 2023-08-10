@@ -15,8 +15,5 @@ public class HomeController {
         return "index";
     }
 
-	@GetMapping("/home/createboard")
-	public String createBoardPage() {
-		return "board";
-	}
+
 }
