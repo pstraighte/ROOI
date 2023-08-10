@@ -10,6 +10,7 @@ import com.rooi.rooi.entity.User;
 import com.rooi.rooi.repository.BoardRepository;
 import com.rooi.rooi.repository.PermissionRepository;
 import com.rooi.rooi.repository.UserRepository;
+import com.rooi.rooi.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -27,8 +29,9 @@ public class BoardService {
 	private final PermissionRepository permissionRepository;
 	private final UserRepository userRepository;
 
-	public List<Board> getAllBoards() {
-		return boardRepository.findAll();
+	public List<Board> getAllMyBoards(User user) {
+		log.info("Service - getAllMyBoards");
+		return boardRepository.findByUserId(user.getId());
 	}
 
 	public BoardResponseDto getBoardById(Long id) {
