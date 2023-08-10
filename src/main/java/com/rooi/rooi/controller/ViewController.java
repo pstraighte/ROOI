@@ -10,7 +10,7 @@ public class ViewController {
 
     @GetMapping("/home/createboard")
     public String createBoardPage() {
-        return "board";
+        return "createboard";
     }
     @GetMapping("/boards")
     public String boardsView() {
