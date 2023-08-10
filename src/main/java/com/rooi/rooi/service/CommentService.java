@@ -20,8 +20,8 @@ public class CommentService {
         private final CardRepository cardRepository;
 
         public CommentResponseDto createComment(CommentRequestDto requestDto, User user) {
-            Card card = cardRepository.findById(requestDto.getCard_id()).get();
-            Comment comment = new Comment(requestDto.getContent(), card, user);  //댓글내용,작성자,작성글 담음
+            Card card = cardRepository.findById(requestDto.getCard_id()).orElseThrow();
+            Comment comment = new Comment(requestDto, card, user);  //댓글내용,작성자,작성글 담음
 
             commentRepository.save(comment);
             return new CommentResponseDto(comment);
