@@ -25,7 +25,7 @@ public class Board extends Timestamped {
 	private List<Columns> columnsList = new ArrayList<>();
 
 	@Column(nullable = false)
-	private String name;
+	private String title;
 
 	@Column
 	private String contents;
@@ -34,14 +34,14 @@ public class Board extends Timestamped {
 	private String color;
 
 	public Board(BoardRequestDto requestDto, User user) {
-		this.name = requestDto.getName();
+		this.title = requestDto.getTitle();
 		this.contents = requestDto.getContents();
 		this.color = requestDto.getColor();
 		this.user = user;
 	}
 
-	public void setName(String title) {
-		this.name = title;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public void setContents(String contents) {

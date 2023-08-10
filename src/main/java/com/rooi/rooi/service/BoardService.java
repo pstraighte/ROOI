@@ -50,7 +50,7 @@ public class BoardService {
 
 		log.info("Service - 유저 검증");
 		if (isPermission(id, user.getUsername())) {
-			board.setName(requestDto.getName());
+			board.setTitle(requestDto.getTitle());
 			board.setContents(requestDto.getContents());
 			if (!(requestDto.getColor() == null)) {
 				board.setColor(requestDto.getColor());
