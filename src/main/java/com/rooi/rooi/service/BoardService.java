@@ -5,126 +5,74 @@ import com.rooi.rooi.dto.BoardRequestDto;
 import com.rooi.rooi.dto.BoardResponseDto;
 import com.rooi.rooi.dto.InviteRequestDto;
 import com.rooi.rooi.entity.Board;
-import com.rooi.rooi.entity.Permission;
 import com.rooi.rooi.entity.User;
-import com.rooi.rooi.repository.BoardRepository;
-import com.rooi.rooi.repository.PermissionRepository;
-import com.rooi.rooi.repository.UserRepository;
-import com.rooi.rooi.security.UserDetailsImpl;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
-@Slf4j
-@Service
-@RequiredArgsConstructor
-public class BoardService {
+public interface BoardService {
 
-	private final BoardRepository boardRepository;
-	private final PermissionRepository permissionRepository;
-	private final UserRepository userRepository;
+	/**
+	 * 내가 권한을 가진 모든 보드 가져오기
+	 * @param user
+	 * @return
+	 */
+	List<BoardResponseDto> getAllMyBoards(User user);
 
-	public List<Board> getAllMyBoards(User user) {
-		log.info("Service - getAllMyBoards");
-		return boardRepository.findByUserId(user.getId());
-	}
+	/**
+	 * 내가 권한을 가진 보드 id 값으로 가져오기
+	 * @param id
+	 * @return
+	 */
+	BoardResponseDto getBoardById(Long id);
 
-	public BoardResponseDto getBoardById(Long id) {
-		Board board = findBoard(id);
-		return new BoardResponseDto(board);
-	}
+	/**
+	 * 보드 생성
+	 * @param requestDto 보드 정보(제목, 설명, 색상)
+	 * @param user 보드 생성 요청자
+	 * @return 생성된 보드 정보 반환(아이디, 제목, 설명, 색상)
+	 */
+	BoardResponseDto createBoard(BoardRequestDto requestDto, User user);
 
-	public BoardResponseDto createBoard(BoardRequestDto requestDto, User user) {
-		log.info("boardService - createBoard");
-		Board board = boardRepository.save(new Board(requestDto, user));
-		permissionRepository.save(new Permission(board, user));
-		return new BoardResponseDto(board);
-	}
-
+	/**
+	 * 보드 수정
+	 * @param id 수정할 보드 id
+	 * @param requestDto 수정할 내용(제목, 설명, 색상)
+	 * @param user 보드 수정 요청자
+	 * @return 생성된 보드 정보 반환(아이디, 제목, 설명, 색상)
+	 */
 	@Transactional
-	public BoardResponseDto updateBoard(Long id, BoardRequestDto requestDto, User user) {
-		// 존재 여부 확인
-		Board board = findBoard(id);
+	BoardResponseDto updateBoard(Long id, BoardRequestDto requestDto, User user);
 
-		log.info("Service - 유저 검증");
-		if (isPermission(id, user.getUsername())) {
-			board.setTitle(requestDto.getTitle());
-			board.setContents(requestDto.getContents());
-			if (!(requestDto.getColor() == null)) {
-				board.setColor(requestDto.getColor());
-			}
-			log.info("Service - 유저 검증 성공");
-		} else {
-			log.info("Service - 유저 검증 실패");
-			throw new IllegalArgumentException("작성자와 관리자만 수정할 수 있습니다.");
-		}
-		return new BoardResponseDto(board);
-	}
+	/**
+	 * 보드 삭제
+	 * @param id 삭제할 보드 id
+	 * @param user 보드 삭제 요청자
+	 * @return 요청 처리 메세지 + 상태코드
+	 */
+	ApiResponseDto deleteBoard(Long id, User user);
 
-	public ApiResponseDto deleteBoard(Long id, User user) {
-		// 존재 여부 확인
-		Board board = findBoard(id);
+	/**
+	 * 유저 초대(권한 부여)
+	 * @param id 권한을 추가할 보드 id
+	 * @param requestDto 추가할 유저 정보
+	 * @param user 초대 요청자
+	 * @return 요청 처리 메세지 + 상태코드
+	 */
+	ApiResponseDto inviteUser(Long id, InviteRequestDto requestDto, User user);
 
-		log.info("Service - 유저 검증");
-		if (board.getUser().getId().equals(user.getId())) {
-			boardRepository.delete(board);
-			log.info("Service - 유저 검증 성공");
-		} else {
-			log.info("Service - 유저 검증 실패");
-			throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
-		}
-		return new ApiResponseDto("보드 삭제 완료", HttpStatus.OK.value());
-	}
+	/**
+	 * 보드가 존재하는지 검증
+	 * @param id 검증할 보드 id
+	 * @return id로 찾은 보드 정보
+	 */
+	Board findBoard(Long id);
 
-	public ApiResponseDto inviteUser(Long id, InviteRequestDto requestDto, User user) {
-		log.info("Service - inviteUser 메서드 진입");
-		Board board = findBoard(id);
-		log.info("Service - findBoard 메서드 : " + board);
-
-		log.info("Service - 작성자 확인");
-		if (!(board.getUser().getId().equals(user.getId()))) {
-			throw new IllegalArgumentException("작성자만 초대할 수 있습니다.");
-		}
-
-		log.info("Service - 유저 확인 전");
-		User invitedUser = userRepository.findByUsername(requestDto.getInviteUser()).orElseThrow(
-				() -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
-		);
-		log.info("invitedUser : " + invitedUser);
-
-		if (permissionRepository.existsByBoardIdAndUserId(board.getId(), invitedUser.getId())) {
-			throw new IllegalArgumentException("이미 초대받은 사용자입니다.");
-		}
-
-		log.info("Service - 유저 확인 후 : " + invitedUser);
-
-		List<Permission> permissionList = permissionRepository.findAllByBoardId(board.getId());
-		log.info("Service - permissionList : " + permissionList);
-
-		permissionRepository.save(new Permission(board, invitedUser));
-
-		return new ApiResponseDto("초대 완료", HttpStatus.OK.value());
-	}
-
-	public Board findBoard(Long id) {
-		return boardRepository.findById(id).orElseThrow(
-				() -> new IllegalArgumentException("존재하지 않는 보드입니다.")
-		);
-	}
-
-	public boolean isPermission(Long boardId, String username) {
-		List<Permission> boardPermissionLIst = permissionRepository.findAllByBoardId(boardId);
-
-		for (Permission p : boardPermissionLIst) {
-			if (p.getUser().getUsername().equals(username)) {
-				return true;
-			}
-		}
-		return false;
-	}
+	/**
+	 * 해당 유저가 보드 관리 권한이 있는지 검증
+	 * @param boardId 검증할 보드 id
+	 * @param username 검증할 유저
+	 * @return 권한이 있다면 true
+	 */
+	boolean isPermission(Long boardId, String username);
 }
