@@ -37,8 +37,8 @@ public class BoardController {
 		return ResponseEntity.status(HttpStatus.OK).body(boardService.getBoardById(id));
 	}
 
-	// 보드 생성
-	@PostMapping
+	// 보드 생성 포스트맵핑 Id 추가
+	@PostMapping("/{id}")
 	public ResponseEntity<?> createBoard(@RequestBody BoardRequestDto requestDto,
 	                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
 		log.info("Controller - createBoard");

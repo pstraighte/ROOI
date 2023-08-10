@@ -29,6 +29,7 @@ public class BoardService {
 	private final PermissionRepository permissionRepository;
 	private final UserRepository userRepository;
 
+	//보드전체조회
 	public List<Board> getAllMyBoards(User user) {
 		log.info("Service - getAllMyBoards");
 		return boardRepository.findByUserId(user.getId());
@@ -39,6 +40,7 @@ public class BoardService {
 		return new BoardResponseDto(board);
 	}
 
+	//보드 생성
 	public BoardResponseDto createBoard(BoardRequestDto requestDto, User user) {
 		log.info("boardService - createBoard");
 		Board board = boardRepository.save(new Board(requestDto, user));
