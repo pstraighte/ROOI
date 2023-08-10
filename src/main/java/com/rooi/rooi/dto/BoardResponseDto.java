@@ -5,13 +5,13 @@ import lombok.Getter;
 
 @Getter
 public class BoardResponseDto {
-	private String title;
-	private String contests;
+	private String name;
+	private String contents;
 	private String boardColor;
 
 	public BoardResponseDto(Board board) {
-		this.title = board.getName();
-		this.contests = board.getContents();
+		this.name = board.getName();
+		this.contents = board.getContents();
 		this.boardColor = board.getColor();
 	}
 }
