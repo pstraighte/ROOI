@@ -44,13 +44,13 @@
       display: flex;
       gap: 10px;
     }
-    .board-container {
+    .column-container {
       display: flex;
       padding: 20px;
       margin-top: 100px; /* To avoid overlapping with topbar */
       margin-left: 250px; /* To avoid overlapping with sidebar */
     }
-    .board {
+    .column {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
@@ -90,13 +90,8 @@
   </style>
 </head>
 <body>
-<div class="sidebar">
-  <div class="sidebar-buttons">
-    <button onclick="inviteMembers()">Invite Members</button>
-    <button onclick="manageMembers()">Manage Members</button>
-    <button onclick="addColumn()">Add Board</button>
-  </div>
-</div>
+
+<!--상단바-->
 <div class="topbar">
   <h1>Trello Board</h1>
   <div class="topbar-buttons">
@@ -104,28 +99,48 @@
     <button onclick="openProfile()">My Profile</button>
   </div>
 </div>
-<div class="board-container">
-  <div class="board">
+
+
+<!--사이드바-->
+<div class="sidebar">
+  <div class="sidebar-buttons">
+    <button onclick="inviteMembers()">Invite Members</button>
+    <button onclick="manageMembers()">Manage Members</button>
+    <button onclick="addColumn()">Add Column</button>
+  </div>
+</div>
+
+<!--칼럼과 카드-->
+<div class="column-container">
+  <div class="column">
     <div class="list">
-      <div class="list-title">
-        <span>To Do</span>
-        <div class="delete-board-btn" onclick="deleteColumn(this)">x</div>
+      <a href = api/columns/${columnsId} class= "col-3">
+        <div class="list-title">
+          <span>${title}</span>
+          <div class="delete-board-btn" onclick="deleteColumn(this)">x</div>
+        </div>
+      </a>
+      <div>
+        <a href = api/${columnsId}/card/${Id} class= "col-3">
+          <div class="card">${title}</div>
+          <div class="card">${title}</div>
+          <div class="add-task-btn" onclick="addTask(this)">+</div>
+        </a>
       </div>
-      <div class="card">Task 1</div>
-      <div class="card">Task 2</div>
-      <div class="add-task-btn" onclick="addTask(this)">+</div>
     </div>
   </div>
 </div>
+
+
 <!--로그아웃 구현 스크립트-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
 <script>
   function inviteMembers() {
-    // Implement your invite members logic here
+    window.location.href = "/post/invite";
   }
 
   function manageMembers() {
-    // Implement your manage members logic here
+    window.location.href = "/post/manage";
   }
 
   function logout() {
@@ -141,6 +156,25 @@
   function deleteColumn(button) {
     const list = button.parentNode.parentNode;
     list.remove();
+
+    $.ajax({
+      type: "DELETE",
+      url:'/api/post/'+post_id,
+      dataType:"json"
+    }).done(function(res){
+      console.log(res)
+      console.log(res.status)
+      if (res.status === 200) {
+        alert("성공적으로 게시글을 삭제했습니다.")
+        location.href = '/'
+      } else if (res.status === 400) {
+        alert("게시글 삭제에 실패했습니다. 본인이 작성한 게시글인지 확인해주세요.")
+      }
+    }).fail(function (request, status, error){
+      console.log(status)
+      console.log(error)
+      alert("에러가 발생했습니다.");
+    });
   }
 
   function addTask(button) {
