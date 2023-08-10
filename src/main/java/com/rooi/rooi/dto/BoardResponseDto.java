@@ -6,12 +6,12 @@ import lombok.Getter;
 @Getter
 public class BoardResponseDto {
 	private String title;
-	private String contests;
+	private String contents;
 	private String boardColor;
 
 	public BoardResponseDto(Board board) {
 		this.title = board.getTitle();
-		this.contests = board.getContents();
+		this.contents = board.getContents();
 		this.boardColor = board.getBoardColor();
 	}
 }

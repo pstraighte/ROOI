@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -28,8 +29,10 @@ public class BoardService {
 	private final PermissionRepository permissionRepository;
 	private final UserRepository userRepository;
 
-	public List<Board> getAllBoards() {
-		return boardRepository.findAll();
+	public List<BoardResponseDto> getAllBoards() {
+		return boardRepository.findAll().stream()
+				.map(BoardResponseDto::new)
+				.collect(Collectors.toList());
 	}
 
 	public BoardResponseDto getBoardById(Long id) {
