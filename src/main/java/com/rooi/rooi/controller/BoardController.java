@@ -25,9 +25,10 @@ public class BoardController {
 	private final BoardService boardService;
 
 	// 내가 작성한 전체 보드 정보 가져오기
-	@GetMapping
-	public List<Board> getAllBoards() {
-		return boardService.getAllBoards();
+	@GetMapping // URL은 마음대로 수정해서 사용하세요 @@
+	public List<Board> getAllMyBoards(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		log.info("Controller - getAllMyBoards");
+		return boardService.getAllMyBoards(userDetails.getUser());
 	}
 
 	// 내가 작성한 특정 보드 정보 가져오기
@@ -36,6 +37,7 @@ public class BoardController {
 		return ResponseEntity.status(HttpStatus.OK).body(boardService.getBoardById(id));
 	}
 
+	// 보드 생성
 	@PostMapping
 	public ResponseEntity<?> createBoard(@RequestBody BoardRequestDto requestDto,
 	                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -44,6 +46,7 @@ public class BoardController {
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 
+	// 보드 수정
 	@PutMapping("/{id}")
 	public ResponseEntity<?> updateBoard(@PathVariable Long id, @RequestBody BoardRequestDto requestDto,
 	                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -55,6 +58,7 @@ public class BoardController {
 		}
 	}
 
+	// 보드 삭제
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteBoard(@PathVariable Long id,
 	                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -66,7 +70,8 @@ public class BoardController {
 		}
 	}
 
-	@GetMapping("/{id}/invite")
+	// 보드에 유저 초대
+	@PostMapping("/{id}/invite")
 	public ResponseEntity<?> inviteUser(@PathVariable Long id, @RequestBody InviteRequestDto requestDto,
 	                                    @AuthenticationPrincipal UserDetailsImpl userDetails) {
 		try {

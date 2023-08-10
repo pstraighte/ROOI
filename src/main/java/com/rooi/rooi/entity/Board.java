@@ -17,15 +17,18 @@ public class Board extends Timestamped {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@OneToMany(mappedBy = "board",cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<Columns> columnsList = new ArrayList<>();
 
+	@OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private List<Permission> permissionList = new ArrayList<>();
+
 	@Column(nullable = false)
-	private String name;
+	private String title;
 
 	@Column
 	private String contents;
@@ -34,14 +37,14 @@ public class Board extends Timestamped {
 	private String color;
 
 	public Board(BoardRequestDto requestDto, User user) {
-		this.name = requestDto.getName();
+		this.title = requestDto.getTitle();
 		this.contents = requestDto.getContents();
 		this.color = requestDto.getColor();
 		this.user = user;
 	}
 
-	public void setName(String title) {
-		this.name = title;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public void setContents(String contents) {
