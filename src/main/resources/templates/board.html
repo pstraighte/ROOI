@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Kanban Board</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            text-align: center;
+            padding: 70px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            display: block;
+            margin: 20px auto;
+        }
+
+        .container {position: relative;}
+
+        .container input[type="text"] {
+            display: block;
+            margin: 20px auto;
+            width: 90%;  /* 원하는 너비 설정 */
+            height: auto;  /* 높이값 초기화 */
+            line-height : normal;  /* line-height 초기화 */
+            padding: .8em .5em; /* 원하는 여백 설정, 상하단 여백으로 높이를 조절 */
+            font-family: inherit;  /* 폰트 상속 */
+            border: 1px solid #999;
+            border-radius: 0;  /* iSO 둥근모서리 제거 */
+            outline-style: none;  /* 포커스시 발생하는 효과 제거를 원한다면 */
+            -webkit-appearance: none;  /* 브라우저별 기본 스타일링 제거 */
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        button {
+            background-color: #466481;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>새로운 보드를 생성해주세요!</h1>
+    <form id="create-board-form">
+        <label for="head">색상</label>
+        <input type="color" id="head" name="head" value="#fff" />
+
+        <input type="text" placeholder="보드 이름" onfocus="this.placeholder=''" onblur="this.placeholder='보드 이름'" id="board-name" required>
+
+        <input type="text" placeholder="보드 설명" onfocus="this.placeholder=''" onblur="this.placeholder='보드 설명'" id="board-contents" required>
+
+        <button type="submit">생성하기</button>
+    </form>
+</div>
+<script>
+    const createBoardForm = document.getElementById('create-board-form');
+
+    createBoardForm.addEventListener('submit', createBoard);
+
+    async function createBoard(event) {
+        event.preventDefault();
+        const boardName = document.getElementById('board-name').value;
+        const boardContents = document.getElementById('board-contents').value;
+        const boardColor = document.getElementById('board-color').value;
+
+        try {
+            const response = await fetch('/api/boards', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name: boardName, contents: boardContents, color: boardColor })
+            });
+
+            if (!response.ok) {
+                throw new Error('보드 생성 실패');
+            }
+
+            const newBoard = await response.json();
+            alert(`보드 "${boardName}" 이(가) 생성 완료되었습니다!`);
+            location.reload();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+</script>
+</body>
+</html>

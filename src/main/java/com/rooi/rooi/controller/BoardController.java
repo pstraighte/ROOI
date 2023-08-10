@@ -24,7 +24,6 @@ public class BoardController {
 
 	private final BoardService boardService;
 
-	// TODO : 생성자 외에 초대받은(권한이 있는) 사용자에게도 보여지게 로직 변경?
 	// 내가 작성한 전체 보드 정보 가져오기
 	@GetMapping
 	public List<Board> getAllBoards() {

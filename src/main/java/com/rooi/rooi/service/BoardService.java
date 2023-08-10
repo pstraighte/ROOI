@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -50,11 +49,11 @@ public class BoardService {
 		Board board = findBoard(id);
 
 		log.info("Service - 유저 검증");
-		if (isPermission(id, user.getId())) {
-			board.setTitle(requestDto.getTitle());
+		if (isPermission(id, user.getUsername())) {
+			board.setName(requestDto.getName());
 			board.setContents(requestDto.getContents());
-			if (!(requestDto.getBoardColor() == null)) {
-				board.setBoardColor(requestDto.getBoardColor());
+			if (!(requestDto.getColor() == null)) {
+				board.setColor(requestDto.getColor());
 			}
 			log.info("Service - 유저 검증 성공");
 		} else {
@@ -90,9 +89,10 @@ public class BoardService {
 		}
 
 		log.info("Service - 유저 확인 전");
-		User invitedUser = userRepository.findById(requestDto.getInviteUser()).orElseThrow(
+		User invitedUser = userRepository.findByUsername(requestDto.getInviteUser()).orElseThrow(
 				() -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
 		);
+		log.info("invitedUser : " + invitedUser);
 
 		if (permissionRepository.existsByBoardIdAndUserId(board.getId(), invitedUser.getId())) {
 			throw new IllegalArgumentException("이미 초대받은 사용자입니다.");
@@ -114,11 +114,11 @@ public class BoardService {
 		);
 	}
 
-	public boolean isPermission(Long boardId, Long userId) {
+	public boolean isPermission(Long boardId, String username) {
 		List<Permission> boardPermissionLIst = permissionRepository.findAllByBoardId(boardId);
 
 		for (Permission p : boardPermissionLIst) {
-			if (p.getUser().getId().equals(userId)) {
+			if (p.getUser().getUsername().equals(username)) {
 				return true;
 			}
 		}

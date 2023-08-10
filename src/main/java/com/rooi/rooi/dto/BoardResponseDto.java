@@ -10,8 +10,8 @@ public class BoardResponseDto {
 	private String boardColor;
 
 	public BoardResponseDto(Board board) {
-		this.title = board.getTitle();
+		this.title = board.getName();
 		this.contests = board.getContents();
-		this.boardColor = board.getBoardColor();
+		this.boardColor = board.getColor();
 	}
 }
