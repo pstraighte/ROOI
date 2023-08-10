@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Kanban Board</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        label, input, button {
+            display: block;
+            margin: 10px auto;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>새로운 보드를 생성해주세요!</h1>
+    <form id="create-board-form">
+        <label for="board-color">Board Color:</label>
+        <input type="color" id="board-color" value="#007bff">
+
+        <label for="board-name">보드 이름 :</label>
+        <input type="text" id="board-name" required>
+
+        <label for="board-name">보드 설명 :</label>
+        <input type="text" id="board-contents" required>
+
+        <button type="submit">생성하기</button>
+    </form>
+</div>
+<script>
+    const createBoardForm = document.getElementById('create-board-form');
+
+    createBoardForm.addEventListener('submit', createBoard);
+
+    async function createBoard(event) {
+        event.preventDefault();
+        const boardName = document.getElementById('board-name').value;
+        const boardContents = document.getElementById('board-contents').value;
+        const boardColor = document.getElementById('board-color').value;
+
+        try {
+            const response = await fetch('/api/boards', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name: boardName, contents: boardContents, color: boardColor })
+            });
+
+            if (!response.ok) {
+                throw new Error('Board creation failed');
+            }
+
+            const newBoard = await response.json();
+            alert(`보드 "${boardName}" 이(가) 생성 완료되었습니다!`);
+            location.reload();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+</script>
+</body>
+</html>

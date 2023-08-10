@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -51,10 +50,10 @@ public class BoardService {
 
 		log.info("Service - 유저 검증");
 		if (isPermission(id, user.getId())) {
-			board.setTitle(requestDto.getTitle());
+			board.setName(requestDto.getName());
 			board.setContents(requestDto.getContents());
-			if (!(requestDto.getBoardColor() == null)) {
-				board.setBoardColor(requestDto.getBoardColor());
+			if (!(requestDto.getColor() == null)) {
+				board.setColor(requestDto.getColor());
 			}
 			log.info("Service - 유저 검증 성공");
 		} else {

@@ -14,4 +14,9 @@ public class HomeController {
         model.addAttribute("username", userDetails.getUsername());
         return "index";
     }
+
+	@GetMapping("/home/createboard")
+	public String createBoardPage() {
+		return "board";
+	}
 }
