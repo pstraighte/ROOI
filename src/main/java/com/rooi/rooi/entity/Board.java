@@ -17,12 +17,15 @@ public class Board extends Timestamped {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@OneToMany(mappedBy = "board",cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<Columns> columnsList = new ArrayList<>();
+
+	@OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private List<Permission> permissionList = new ArrayList<>();
 
 	@Column(nullable = false)
 	private String title;
@@ -31,12 +34,12 @@ public class Board extends Timestamped {
 	private String contents;
 
 	@Column(name = "board_color")
-	private String boardColor;
+	private String color;
 
 	public Board(BoardRequestDto requestDto, User user) {
 		this.title = requestDto.getTitle();
 		this.contents = requestDto.getContents();
-		this.boardColor = requestDto.getBoardColor();
+		this.color = requestDto.getColor();
 		this.user = user;
 	}
 
@@ -48,13 +51,13 @@ public class Board extends Timestamped {
 		this.contents = contents;
 	}
 
-	public void setBoardColor(String boardColor) {
-		this.boardColor = boardColor;
+	public void setColor(String boardColor) {
+		this.color = boardColor;
 	}
 
 	// 값을 입력하지 않는다면 default => "white"
 	@PrePersist
 	public void prePersist() {
-		this.boardColor = this.boardColor == null ? "white" : this.boardColor;
+		this.color = this.color == null ? "white" : this.color;
 	}
 }

@@ -12,6 +12,6 @@ public class BoardResponseDto {
 	public BoardResponseDto(Board board) {
 		this.title = board.getTitle();
 		this.contents = board.getContents();
-		this.boardColor = board.getBoardColor();
+		this.boardColor = board.getColor();
 	}
 }
