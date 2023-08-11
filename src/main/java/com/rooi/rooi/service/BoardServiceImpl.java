@@ -149,7 +149,6 @@ public class BoardServiceImpl implements BoardService {
 		for (Permission p : boardPermissionList) {
 			inviteResponseDtoList.add(new InviteResponseDto(p));
 		}
-
 		return inviteResponseDtoList;
 	}
 }
