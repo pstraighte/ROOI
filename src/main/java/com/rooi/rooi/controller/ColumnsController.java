@@ -48,7 +48,7 @@ public class ColumnsController {
         return columnsService.updateColumns(columnsId, columnsRequestDto,userDetails.getUser());
     }
 
-    @DeleteMapping("/{columnsId}")
+    @DeleteMapping("delete/{columnsId}")
     public ResponseEntity<ApiResponseDto> deleteColumns(@PathVariable Long columnsId,@AuthenticationPrincipal UserDetailsImpl userDetails){
         try{
             columnsService.deleteColumns(columnsId, userDetails.getUser());
