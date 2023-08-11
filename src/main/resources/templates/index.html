@@ -101,7 +101,7 @@
       <a href = "/">
         <button >home</button>
       </a>
-      <button onclick="logout()">보드 수정</button>
+      <button onclick="updateBoard()">보드 수정</button>
       <button onclick="deleteBoard()" id="profile-btn">보드 삭제</button>
     </div>
   </div>
@@ -156,9 +156,7 @@
     window.location.href = "/post/manage";
   }
 
-  function deleteBoard() {
-    window.location.href = "/boards/delete/"+board_id;
-  }
+
 
   function openProfile() {
     window.location.href = "/user/profile";
@@ -277,8 +275,14 @@
   }
 
   // ============ 보드 삭제 ===============
+  function deleteBoard() {
+    window.location.href = "/boards/delete/"+board_id;
+  }
 
   // ============ 보드 수정 ===============
+  function updateBoard() {
+    window.location.href = "/boards/update/"+board_id;
+  }
 </script>
 </body>
 </html>
