@@ -320,28 +320,7 @@
     });
   }
 
-  function deleteColumns(column_id) {
-    let column_url = '/api/columns/delete/' + column_id;
-    console.log(column_url)
-    $.ajax({
-      type: "DELETE",
-      url: column_url,
-      dataType:"json"
-    }).done(function(res){
-      console.log(res)
-      console.log(res.status)
-      if (res.statusCode === 200) {
-        alert("컬럼을 삭제했습니다.")
-        window.location.reload()
-      } else if (res.statusCode === 400) {
-        alert("컬럼 삭제에 실패했습니다")
-      }
-    }).fail(function (request, status, error){
-      console.log(status)
-      console.log(error)
-      alert("에러가 발생했습니다.");
-    });
-  }
+
 
   // function deleteColumns(column_id) {
   //     let column_url = '/api/columns/delete/' + column_id;
@@ -367,20 +346,6 @@
   //         });
   // }
 
-  function addColumn() {
-    const columnContainer = document.querySelector('.board');
-    const newColumn = document.createElement('div');
-    newColumn.className = 'list';
-    newColumn.innerHTML = `
-        <div class="list-title">
-          <span>New Column</span>
-          <div class="delete-board-btn" onclick="deleteColumn(this)">x</div>
-        </div>
-        <div class="card">New Task</div>
-        <div class="add-task-btn" onclick="addTask(this)">+</div>
-      `;
-    columnContainer.appendChild(newColumn);
-  }
 </script>
 </body>
 </html>

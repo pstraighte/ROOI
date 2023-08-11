@@ -4,7 +4,6 @@ import com.rooi.rooi.dto.BoardResponseDto;
 import com.rooi.rooi.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.rooi.rooi.dto.InviteResponseDto;
-import com.rooi.rooi.service.BoardService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
