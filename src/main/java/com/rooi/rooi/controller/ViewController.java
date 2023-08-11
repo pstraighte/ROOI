@@ -21,7 +21,10 @@ public class ViewController {
     public String columnsView() {
         return "columns";
     }
-
+    @GetMapping("/home/createcard")
+    public String createCardPage() {
+        return "createcard";
+    }
     @GetMapping("/cards")
     public String cardsView() {
         return "cards";

@@ -56,9 +56,9 @@
 <div class="container">
     <h1>새로운 카드를 생성해주세요!</h1>
     <br>
-    <form id="create-board-form">
+    <form id="create-card-form">
         <label for="head">색상</label>
-        <input type="color" id="head" name="head" value="#fff" />
+        <input type="color" id="head" name="color" value="#ffffff"/>
         <input type="text" placeholder="카드 이름" onfocus="this.placeholder=''" onblur="this.placeholder='카드 이름'" id="card-title" required>
         <input type="text" placeholder="카드 설명" onfocus="this.placeholder=''" onblur="this.placeholder='카드 설명'" id="card-contents" required>
         <input type="text" placeholder="작업자 설정" onfocus="this.placeholder=''" onblur="this.placeholder='작업자 설정'" id="card-worker" required>
@@ -66,37 +66,54 @@
 <!--        ㄴ필수구현 중 작업자 변경 기능도 있긴한데 넣을지말지 모르겠음-->
         <label for="head">마감일 </label>
         <input type="datetime-local" placeholder="마감일" onfocus="this.placeholder=''" onblur="this.placeholder='마감일'" id="card-deadline" required>
-        <button type="submit">생성하기</button>
+        <button type="submit" id="create-card-button">생성하기</button>
     </form>
 </div>
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
     const createCardForm = document.getElementById('create-card-form');
-    createCardForm.addEventListener('submit', createCard);
-    async function createCard(event) {
+    const createCardButton = document.getElementById("create-card-button");
+
+    createCardForm.addEventListener("submit", async (event) => {
         event.preventDefault();
-        const cardTitle = document.getElementById('card-title').value;
-        const cardContents = document.getElementById('card-contents').value;
-        const cardColor = document.getElementById('head').value;
-        const cardWork = document.getElementById('card-worker').value;
-        const cardDeadline = document.getElementById('card-deadline').value;
+
+        const color = document.getElementById('head').value;
+        const title = document.getElementById('card-title').value;
+        const contents = document.getElementById('card-contents').value;
+        const work = document.getElementById('card-worker').value;
+        const deadline = document.getElementById('card-deadline').value;
+
+        const requestData = {
+            color: color,
+            title: title,
+            contents: contents,
+            work : work,
+            deadline:deadline
+        };
+
         try {
             const response = await fetch('/api/cards', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ title: cardTitle, contents: cardContents, color: cardColor, work:cardWork, deadline:cardDeadline })
+                body: JSON.stringify(requestData)
             });
+
             if (!response.ok) {
-                throw new Error('card creation failed');
+                const reponseData = await response.json();
+                const newCardId = reponseData.id;
+                alert("카드가 생성되었습니다.");
+                window.location.href = `/`
+            } else {
+                // 보드 생성 실패한 경우의 처리
+                alert("보드 생성에 실패했습니다.");
             }
-            const newcard = await response.json();
-            alert(`카드 "${cardTitle}" 이(가) 생성 완료되었습니다!`);
-            location.reload();
         } catch (error) {
-            console.error(error);
+            console.error("Error creating board:", error);
         }
-    }
+    });
+    });
 </script>
 </body>
 </html>
