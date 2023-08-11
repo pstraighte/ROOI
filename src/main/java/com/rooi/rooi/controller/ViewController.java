@@ -14,15 +14,15 @@ public class ViewController {
         return "Index";
     }
 
-    //칼럼을 수정할때 1차적으로 기존 칼럼의 데이터를 가져오는 겟메서드, 이때 특정 칼럼을 조회하면 그 칼럼의 카드는 모두 조회한다.
-    @GetMapping("/board/{id}/columns/{columnsId}")
-    public String columnsView() {
-        return "columns";
-    }
+	// 보드 생성 페이지
+//	@GetMapping("/boards/create")
+//	public String createBoardPage() {
+//		return "createboard";
+//	}
 
 	// 보드 생성 페이지
 	@GetMapping("/boards/create")
-	public String createBoardPage() {
+	public String createBoard() {
 		return "createboard";
 	}
 
@@ -33,14 +33,15 @@ public class ViewController {
 		return "updateboard";
 	}
 
-	// 아직 미구현
+	// 보드 삭제 페이지 (미구현)
 //	@GetMapping("/boards/delete/{id}")
 //	public String deleteBoardPage(@PathVariable Long id, Model model) {
 //		model.addAttribute("id", id);
 //		return "deleteboard";
 //	}
 
-	@GetMapping("/columns")
+	//칼럼을 수정할때 1차적으로 기존 칼럼의 데이터를 가져오는 겟메서드, 이때 특정 칼럼을 조회하면 그 칼럼의 카드는 모두 조회한다.
+	@GetMapping("/board/{id}/columns/{columnsId}")
 	public String columnsView() {
 		return "columns";
 	}
