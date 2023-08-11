@@ -11,12 +11,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/columns")
 @AllArgsConstructor
 public class ColumnsController {
 
     private final ColumnsService columnsService;
+
+    // 모든 컬럼 조회 API
+    @GetMapping("/all/{boardId}")
+    public List<ColumnsResponseDto> getPosts(@PathVariable Long boardId){
+        return columnsService.getAllColumns(boardId);
+    }
 
     // 컬럼 조회 API
     @GetMapping("/{columnsId}")

@@ -1,5 +1,8 @@
 package com.rooi.rooi.controller;
 
+import com.rooi.rooi.dto.BoardResponseDto;
+import com.rooi.rooi.service.BoardService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,9 +11,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class ViewController {
 
+    @Autowired
+    private BoardService boardService;
+
     //보드를 생성함면 보이는 보드페이지 이때 주소는 /boards/{id} 이지만 데이터는 해당 보드의 칼럼과 카드를 모두 가져온다
     @GetMapping("/boards/{id}")
-    public String boardsView() {
+    public String boardsView(@PathVariable Long id, Model model) {
+        BoardResponseDto board = boardService.getBoardById(id);
+        model.addAttribute("board", board);
         return "Index";
     }
 
