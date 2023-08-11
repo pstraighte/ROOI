@@ -5,6 +5,7 @@ import com.rooi.rooi.dto.BoardRequestDto;
 import com.rooi.rooi.dto.BoardResponseDto;
 import com.rooi.rooi.dto.InviteRequestDto;
 import com.rooi.rooi.entity.Board;
+import com.rooi.rooi.entity.Permission;
 import com.rooi.rooi.security.UserDetailsImpl;
 import com.rooi.rooi.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class BoardController {
 
 	// 내가 작성한 전체 보드 정보 가져오기
 	@GetMapping // URL은 마음대로 수정해서 사용하세요 @@
-	public List<Board> getAllMyBoards(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+	public List<BoardResponseDto> getAllMyBoards(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		log.info("Controller - getAllMyBoards");
 		return boardService.getAllMyBoards(userDetails.getUser());
 	}
@@ -37,8 +38,8 @@ public class BoardController {
 		return ResponseEntity.status(HttpStatus.OK).body(boardService.getBoardById(id));
 	}
 
-	// 보드 생성
-	@PostMapping
+	// 보드 생성 포스트맵핑 Id 추가
+	@PostMapping("/{id}")
 	public ResponseEntity<?> createBoard(@RequestBody BoardRequestDto requestDto,
 	                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
 		log.info("Controller - createBoard");
