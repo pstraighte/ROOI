@@ -4,8 +4,6 @@ import com.rooi.rooi.dto.ApiResponseDto;
 import com.rooi.rooi.dto.BoardRequestDto;
 import com.rooi.rooi.dto.BoardResponseDto;
 import com.rooi.rooi.dto.InviteRequestDto;
-import com.rooi.rooi.entity.Board;
-import com.rooi.rooi.entity.Permission;
 import com.rooi.rooi.security.UserDetailsImpl;
 import com.rooi.rooi.service.BoardService;
 import lombok.RequiredArgsConstructor;
