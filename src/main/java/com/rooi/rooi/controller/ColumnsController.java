@@ -11,43 +11,51 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/columns")
 @AllArgsConstructor
 public class ColumnsController {
 
-	private final ColumnsService columnsService;
+    private final ColumnsService columnsService;
 
-	// 컬럼 조회 API
-	@GetMapping("/{columnsId}")
-	public ResponseEntity<ColumnsResponseDto> getColumns(@PathVariable Long columnsId) {
-		ColumnsResponseDto columnsResponseDto = columnsService.getColumns(columnsId);
-		if (columnsResponseDto != null) {
-			return ResponseEntity.ok(columnsResponseDto);
-		} else {
-			return ResponseEntity.notFound().build();
-		}
-	}
+    // 모든 컬럼 조회 API
+    @GetMapping("/all/{boardId}")
+    public List<ColumnsResponseDto> getPosts(@PathVariable Long boardId){
+        return columnsService.getAllColumns(boardId);
+    }
+
+    // 컬럼 조회 API
+    @GetMapping("/{columnsId}")
+    public ResponseEntity<ColumnsResponseDto> getColumns(@PathVariable Long columnsId) {
+        ColumnsResponseDto columnsResponseDto = columnsService.getColumns(columnsId);
+        if (columnsResponseDto != null) {
+            return ResponseEntity.ok(columnsResponseDto);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 
-	@PostMapping("")
-	public ColumnsResponseDto createColumns(@RequestBody ColumnsRequestDto columnsRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-		return columnsService.createColumns(columnsRequestDto, userDetails.getUser());
-	}
+    @PostMapping("")
+    public ColumnsResponseDto createColumns (@RequestBody ColumnsRequestDto columnsRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return columnsService.createColumns(columnsRequestDto,userDetails.getUser());
+    }
 
-	@PutMapping("/{columnsId}")
-	public ColumnsResponseDto updateColumns(@PathVariable Long columnsId, @RequestBody ColumnsRequestDto columnsRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-		return columnsService.updateColumns(columnsId, columnsRequestDto, userDetails.getUser());
-	}
+    @PutMapping("/{columnsId}")
+    public ColumnsResponseDto updateColumns (@PathVariable Long columnsId,@RequestBody ColumnsRequestDto columnsRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return columnsService.updateColumns(columnsId, columnsRequestDto,userDetails.getUser());
+    }
 
-	@DeleteMapping("/{columnsId}")
-	public ResponseEntity<ApiResponseDto> deleteColumns(@PathVariable Long columnsId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-		try {
-			columnsService.deleteColumns(columnsId, userDetails.getUser());
-		} catch (IllegalArgumentException e) {
-			return ResponseEntity.ok().body(new ApiResponseDto("컬럼을 찾을 수 없습니다", HttpStatus.BAD_REQUEST.value()));
-		}
+    @DeleteMapping("/{columnsId}")
+    public ResponseEntity<ApiResponseDto> deleteColumns(@PathVariable Long columnsId,@AuthenticationPrincipal UserDetailsImpl userDetails){
+        try{
+            columnsService.deleteColumns(columnsId, userDetails.getUser());
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.ok().body(new ApiResponseDto("컬럼을 찾을 수 없습니다", HttpStatus.BAD_REQUEST.value()));
+        }
 
-		return ResponseEntity.ok().body(new ApiResponseDto("컬럼 삭제 성공", HttpStatus.OK.value()));
-	}
+    return ResponseEntity.ok().body(new ApiResponseDto("컬럼 삭제 성공", HttpStatus.OK.value()));
+}
 }
