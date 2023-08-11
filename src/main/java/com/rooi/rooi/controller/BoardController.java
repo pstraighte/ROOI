@@ -25,7 +25,6 @@ public class BoardController {
 
 	private final BoardService boardService;
 
-	// TODO : 생성자 외에 초대받은(권한이 있는) 사용자에게도 보여지게 로직 변경?
 	// 내가 작성한 전체 보드 정보 가져오기
 	@GetMapping // URL은 마음대로 수정해서 사용하세요 @@
 	public List<BoardResponseDto> getAllMyBoards(@AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -39,7 +38,8 @@ public class BoardController {
 		return ResponseEntity.status(HttpStatus.OK).body(boardService.getBoardById(id));
 	}
 
-	@PostMapping
+	// 보드 생성 포스트맵핑 Id 추가
+	@PostMapping("/{id}")
 	public ResponseEntity<?> createBoard(@RequestBody BoardRequestDto requestDto,
 	                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
 		log.info("Controller - createBoard");
@@ -47,6 +47,7 @@ public class BoardController {
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 
+	// 보드 수정
 	@PutMapping("/{id}")
 	public ResponseEntity<?> updateBoard(@PathVariable Long id, @RequestBody BoardRequestDto requestDto,
 	                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -58,6 +59,7 @@ public class BoardController {
 		}
 	}
 
+	// 보드 삭제
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteBoard(@PathVariable Long id,
 	                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -69,7 +71,8 @@ public class BoardController {
 		}
 	}
 
-	@GetMapping("/{id}/invite")
+	// 보드에 유저 초대
+	@PostMapping("/{id}/invite")
 	public ResponseEntity<?> inviteUser(@PathVariable Long id, @RequestBody InviteRequestDto requestDto,
 	                                    @AuthenticationPrincipal UserDetailsImpl userDetails) {
 		try {
