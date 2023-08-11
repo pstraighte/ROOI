@@ -231,12 +231,13 @@
                 let temp_html1 = `
                                       <div class="column" style="text-decoration-line: none;">
                                             <div class="list" id = "columns-list" >
-                                              <a href = api/columns/${columnsId} class= "col-3">
                                                 <div class="list-title">
-                                                  <span>${title}</span>
-                                                  <div class="delete-board-btn" onclick="deleteColumn(${columnsId})">x</div>
+                                                  <a href = api/columns/${columnsId} class= "col-3">
+                                                    <span>${title}</span>
+                                                  </a>
+                                                  <div class="delete-board-btn" onclick="deleteColumns(${columnsId})">x</div>
                                                 </div>
-                                              </a>
+
                                               <div id="card-list">`
 
 
@@ -313,19 +314,20 @@
     });
   }
 
-  function deleteColumn(column_id) {
-    let url = '/api/columns/delete/'+column_id
-    console.log(url)
+  function deleteColumns(column_id) {
+    let column_url = '/api/columns/delete/' + column_id;
+    console.log(column_url)
     $.ajax({
       type: "DELETE",
-      url: url,
+      url: column_url,
+      dataType:"json"
     }).done(function(res){
       console.log(res)
       console.log(res.status)
-      if (res.status === 200) {
+      if (res.statusCode === 200) {
         alert("컬럼을 삭제했습니다.")
-        location.reload()
-      } else if (res.status === 400) {
+        window.location.reload()
+      } else if (res.statusCode === 400) {
         alert("컬럼 삭제에 실패했습니다")
       }
     }).fail(function (request, status, error){
@@ -334,6 +336,31 @@
       alert("에러가 발생했습니다.");
     });
   }
+
+  // function deleteColumns(column_id) {
+  //     let column_url = '/api/columns/delete/' + column_id;
+  //     console.log(column_url);
+  //
+  //     fetch(column_url, {
+  //         method: "DELETE"
+  //     })
+  //         .then(response => response.json())
+  //         .then(res => {
+  //             console.log(res);
+  //             console.log(res.status);
+  //             if (res.status === 200) {
+  //                 alert("컬럼을 삭제했습니다.");
+  //                 window.location.href = '/boards/' + board_id;
+  //             } else if (res.status === 400) {
+  //                 alert("컬럼 삭제에 실패했습니다.");
+  //             }
+  //         })
+  //         .catch(error => {
+  //             console.error("Error:", error);
+  //             alert("에러가 발생했습니다.");
+  //         });
+  // }
+
 </script>
 </body>
 </html>
