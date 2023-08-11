@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Card</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+            padding: 70px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            display: block;
+            margin: 20px auto;
+        }
+
+        .container input[type="text"] {
+            display: block;
+            margin: 20px auto;
+            width: 90%;
+            height: auto;
+            line-height : normal;
+            padding: .8em .5em;
+            font-family: inherit;
+            border: 1px solid #999;
+            border-radius: 0;
+            outline-style: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        button {
+            background-color: #466481;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>새로운 카드를 생성해주세요!</h1>
+    <br>
+    <form id="create-board-form">
+        <label for="head">색상</label>
+        <input type="color" id="head" name="head" value="#fff" />
+        <input type="text" placeholder="카드 이름" onfocus="this.placeholder=''" onblur="this.placeholder='카드 이름'" id="card-title" required>
+        <input type="text" placeholder="카드 설명" onfocus="this.placeholder=''" onblur="this.placeholder='카드 설명'" id="card-contents" required>
+        <input type="text" placeholder="작업자 설정" onfocus="this.placeholder=''" onblur="this.placeholder='작업자 설정'" id="card-worker" required>
+<!--        <input type="text" placeholder="작업자 변경" onfocus="this.placeholder=''" onblur="this.placeholder='작업자 변경'" id="card-workerRe">-->
+<!--        ㄴ필수구현 중 작업자 변경 기능도 있긴한데 넣을지말지 모르겠음-->
+        <label for="head">마감일 </label>
+        <input type="datetime-local" placeholder="마감일" onfocus="this.placeholder=''" onblur="this.placeholder='마감일'" id="card-deadline" required>
+        <button type="submit">생성하기</button>
+    </form>
+</div>
+<script>
+    const createCardForm = document.getElementById('create-card-form');
+    createCardForm.addEventListener('submit', createCard);
+    async function createCard(event) {
+        event.preventDefault();
+        const cardTitle = document.getElementById('card-title').value;
+        const cardContents = document.getElementById('card-contents').value;
+        const cardColor = document.getElementById('head').value;
+        const cardWork = document.getElementById('card-worker').value;
+        const cardDeadline = document.getElementById('card-deadline').value;
+        try {
+            const response = await fetch('/api/cards', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ title: cardTitle, contents: cardContents, color: cardColor, work:cardWork, deadline:cardDeadline })
+            });
+            if (!response.ok) {
+                throw new Error('card creation failed');
+            }
+            const newcard = await response.json();
+            alert(`카드 "${cardTitle}" 이(가) 생성 완료되었습니다!`);
+            location.reload();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+</script>
+</body>
+</html>
