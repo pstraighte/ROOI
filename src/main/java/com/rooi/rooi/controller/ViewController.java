@@ -1,12 +1,23 @@
 package com.rooi.rooi.controller;
 
+import com.rooi.rooi.dto.InviteResponseDto;
+import com.rooi.rooi.service.BoardService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.List;
+
 @Controller
 public class ViewController {
+
+    private final BoardService boardService;
+
+    public ViewController(BoardService boardService) {
+        this.boardService = boardService;
+    }
+
 
     //보드를 생성함면 보이는 보드페이지 이때 주소는 /boards/{id} 이지만 데이터는 해당 보드의 칼럼과 카드를 모두 가져온다
     @GetMapping("/boards/{id}")
@@ -52,10 +63,18 @@ public class ViewController {
         return "cards";
     }
 
-    //특정 아이디 값을 같은 유저를 초대하는 메서드로 보인다.
+    //멤버 초대
     @GetMapping("/invite/{id}")
     public String inviteUserPage(@PathVariable Long id, Model model){
         model.addAttribute("boardId", id);
         return "inviteUser";
+    }
+
+    //초대된 멤버 목록
+    @GetMapping("/manage/{id}")
+    public String manageUser(@PathVariable Long id, Model model) {
+        List<InviteResponseDto> inviteUserList = boardService.getInviteUserList(id);
+        model.addAttribute("inviteUserList", inviteUserList);
+        return "manageUser"; // manageUser.html 뷰 페이지로 이동
     }
 }

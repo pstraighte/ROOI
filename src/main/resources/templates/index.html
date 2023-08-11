@@ -107,7 +107,7 @@
 <div class="sidebar">
   <div class="sidebar-buttons">
     <button data-board_id="1" onclick="openInvitePopup(this)">Invite Members</button>
-    <button onclick="manageMembers()">Manage Members</button>
+    <button data-board_id="1" onclick="openManagePopup(this)">Manage Members</button>
     <button onclick="addColumn()">Add Column</button>
   </div>
 </div>
@@ -147,8 +147,8 @@
     // 나머지 함수들도 동일한 방식으로 boardId를 활용하여 URL을 생성
   }
 
-  function manageMembers() {
-    window.location.href = "/post/manage";
+  function openManagePopup(button) {
+    const popupWindow = window.open(`/manage/${boardId}`, 'Manage Members', 'width=600,height=400');
   }
 
   function logout() {
