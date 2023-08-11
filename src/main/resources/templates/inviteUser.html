@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invite User</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -45,22 +46,21 @@
         }
     </style>
 </head>
-<<body>
+<body>
 <div class="container">
     <h1>Invite User</h1>
-    <input type="text" id="username" class="input-box" placeholder="Username">
-    <button id="inviteButton" class="invite-button" onClick="inviteUser()">Invite</button>
+    <input type="text" id="inviteUser" class="input-box" placeholder="Username"> <!-- 수정된 부분: id 속성이 "inviteUser"인 input 요소 -->
+    <!-- boardId를 data 속성으로 추가하고, inviteUser 함수 호출 시 파라미터로 넘겨줍니다. -->
+    <button id="inviteButton" class="invite-button" data-board_id="1" onClick="inviteUser()">Invite</button>
 </div>
-<script src="https://code.jquery.com/jquery-3.7.0.min.js"
-        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
 <script>
     function inviteUser() {
-        const username = $("#username").val();
-        const boardId = $("#boardId").val();
+        const inviteUser = $("#inviteUser").val(); // 수정된 부분: id가 "inviteUser"인 input 요소에서 값을 가져옴
+        const boardId = $("#inviteButton").data("board_id"); // data-board_id 속성에서 값을 가져옵니다.
         $.ajax({
             type: "POST",
-            url: "/api/boards/"+boardId+"/invite",
-            data: JSON.stringify({username: username}),
+            url: '/api/boards/' + boardId + '/invite',
+            data: JSON.stringify({ inviteUser: inviteUser }),
             contentType: "application/json",
             success: function (res) {
                 if (res.success) {

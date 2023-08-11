@@ -92,7 +92,7 @@
 <body>
 <div class="sidebar">
   <div class="sidebar-buttons">
-    <button onclick="inviteMembers()">Invite Members</button>
+    <button data-board_id="1" onclick="openInvitePopup(this)">Invite Members</button>
     <button onclick="manageMembers()">Manage Members</button>
     <button onclick="addColumn()">Add Board</button>
   </div>
@@ -126,8 +126,9 @@
 <!--로그아웃 구현 스크립트-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
 <script>
-  function inviteMembers() {
-    const popupWindow = window.open('inviteUser.html', 'Invite Members', 'width=600,height=400');
+  function openInvitePopup(button) {
+    const boardId = button.getAttribute('data-board_id');
+    const popupWindow = window.open('/invite/'+boardId, 'Invite Members', 'width=600,height=400');
   }
 
   function manageMembers() {
