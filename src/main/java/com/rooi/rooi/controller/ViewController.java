@@ -11,7 +11,7 @@ public class ViewController {
     //
     @GetMapping("/home/createboard")
     public String createBoardPage() {
-        return "board";
+        return "createboard";
     }
 
     //보드를 생성함면 보이는 보드페이지 이때 주소는 /boards/{id} 이지만 데이터는 해당 보드의 칼럼과 카드를 모두 가져온다
