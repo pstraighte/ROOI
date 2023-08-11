@@ -51,15 +51,17 @@
     <h1>Invite User</h1>
     <input type="text" id="inviteUser" class="input-box" placeholder="Username"> <!-- 수정된 부분: id 속성이 "inviteUser"인 input 요소 -->
     <!-- boardId를 data 속성으로 추가하고, inviteUser 함수 호출 시 파라미터로 넘겨줍니다. -->
-    <button id="inviteButton" class="invite-button" data-board_id="1" onClick="inviteUser()">Invite</button>
+    <button id="inviteButton" class="invite-button" data-board_id="" onClick="inviteUser()">Invite</button>
 </div>
 <script>
     function inviteUser() {
-        const inviteUser = $("#inviteUser").val(); // 수정된 부분: id가 "inviteUser"인 input 요소에서 값을 가져옴
-        const boardId = $("#inviteButton").data("board_id"); // data-board_id 속성에서 값을 가져옵니다.
+        const inviteUser = $("#inviteUser").val();
+        const pathParts = window.location.pathname.split('/'); // 현재 URL의 경로를 나눕니다.
+        const boardIdFromURL = pathParts[pathParts.indexOf('invite') + 1]; // invite 뒤의 숫자를 가져옵니다.
+
         $.ajax({
             type: "POST",
-            url: '/api/boards/' + boardId + '/invite',
+            url: '/api/boards/' + boardIdFromURL + '/invite',
             data: JSON.stringify({ inviteUser: inviteUser }),
             contentType: "application/json",
             success: function (res) {
@@ -74,6 +76,8 @@
             }
         });
     }
+
+
 </script>
 </body>
 </html>

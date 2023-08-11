@@ -137,9 +137,14 @@
 <!--로그아웃 구현 스크립트-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
 <script>
+  // 현재 URL에서 boardId 추출
+  const pathParts = window.location.pathname.split('/');
+  const boardId = pathParts[pathParts.indexOf('boards') + 1];
+
+  // Invite Members 버튼 클릭 시
   function openInvitePopup(button) {
-    const boardId = button.getAttribute('data-board_id');
-    const popupWindow = window.open('/invite/'+boardId, 'Invite Members', 'width=600,height=400');
+    const popupWindow = window.open(`/invite/${boardId}`, 'Invite Members', 'width=600,height=400');
+    // 나머지 함수들도 동일한 방식으로 boardId를 활용하여 URL을 생성
   }
 
   function manageMembers() {
