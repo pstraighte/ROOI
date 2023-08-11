@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const responseData = await response.json(); // 응답 데이터를 JSON으로 파싱
             const newBoardId = responseData.id; // 생성된 보드의 ID 추출
             alert("보드가 생성되었습니다.");
-            window.location.href = `/boards/${newBoardId}`
+            window.location.href = `/`
         } else {
             // 보드 생성 실패한 경우의 처리
         alert("보드 생성에 실패했습니다.");
