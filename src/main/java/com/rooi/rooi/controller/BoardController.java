@@ -5,6 +5,7 @@ import com.rooi.rooi.dto.BoardRequestDto;
 import com.rooi.rooi.dto.BoardResponseDto;
 import com.rooi.rooi.dto.InviteRequestDto;
 import com.rooi.rooi.entity.Board;
+import com.rooi.rooi.entity.Permission;
 import com.rooi.rooi.security.UserDetailsImpl;
 import com.rooi.rooi.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class BoardController {
 	// TODO : 생성자 외에 초대받은(권한이 있는) 사용자에게도 보여지게 로직 변경?
 	// 내가 작성한 전체 보드 정보 가져오기
 	@GetMapping // URL은 마음대로 수정해서 사용하세요 @@
-	public List<Board> getAllMyBoards(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+	public List<BoardResponseDto> getAllMyBoards(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		log.info("Controller - getAllMyBoards");
 		return boardService.getAllMyBoards(userDetails.getUser());
 	}
