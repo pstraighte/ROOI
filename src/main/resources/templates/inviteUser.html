@@ -59,21 +59,25 @@
         const pathParts = window.location.pathname.split('/'); // 현재 URL의 경로를 나눕니다.
         const boardIdFromURL = pathParts[pathParts.indexOf('invite') + 1]; // invite 뒤의 숫자를 가져옵니다.
 
+
         $.ajax({
             type: "POST",
             url: '/api/boards/' + boardIdFromURL + '/invite',
-            data: JSON.stringify({ inviteUser: inviteUser }),
-            contentType: "application/json",
-            success: function (res) {
-                if (res.success) {
-                    alert("User invited successfully!");
-                } else {
-                    alert("Failed to invite user.");
-                }
-            },
-            error: function (err) {
-                console.log(err);
+            data: JSON.stringify({inviteUser: inviteUser}),
+            contentType: "application/json; charset=urf-8",
+            dataType: "json"
+        }).done(function (res) {
+            console.log(res)
+            console.log(res.statusCode)
+            if (res.statusCode === 200) {
+                alert("User invited successfully!");
+            } else {
+                alert("Failed to invite user.");
             }
+        }).fail(function (request, status, error) {
+            console.log(status)
+            console.log(error)
+            alert("에러가 발생했습니다.");
         });
     }
 
