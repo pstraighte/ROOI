@@ -92,6 +92,39 @@
     #profile-btn {
       margin-right: 30px;
     }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 600px;
+    }
+
+    .close {
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    @media screen and (max-width: 600px) {
+      .modal-content {
+        width: 90%;
+      }
+    }
   </style>
 </head>
 <body id="dynamic-body">
@@ -106,13 +139,23 @@
     </div>
   </div>
 
+  <div class="modal" id="myModal">
+    <div class="modal-content">
+      <span class="close" id="closeModal">&times;</span>
+      <div>
+        <input type="text" class="form-control" id="inputColumnName" placeholder="Column Name" style="width: 300px; height: 30px">
+        <button class="btn btn-dark" id="btn-login" style="margin-left: 10px" onclick="addColumn()"><strong>생성</strong></button>
+      </div>
+    </div>
+
+  </div>
 
   <!--사이드바-->
   <div class="sidebar">
     <div class="sidebar-buttons">
       <button onclick="inviteMembers()">Invite Members</button>
       <button onclick="manageMembers()">Manage Members</button>
-      <button onclick="addColumn()">Add Column</button>
+      <button onclick="openModal()">Add Column</button>
     </div>
   </div>
 
@@ -157,64 +200,12 @@
   }
 
 
-
-  function openProfile() {
-    window.location.href = "/user/profile";
-  }
-
-  function deleteColumn(button) {
-    const list = button.parentNode.parentNode;
-    list.remove();
-
-    $.ajax({
-      type: "DELETE",
-      url:'/api/post/'+post_id,
-      dataType:"json"
-    }).done(function(res){
-      console.log(res)
-      console.log(res.status)
-      if (res.status === 200) {
-        alert("성공적으로 게시글을 삭제했습니다.")
-        location.href = '/'
-      } else if (res.status === 400) {
-        alert("게시글 삭제에 실패했습니다. 본인이 작성한 게시글인지 확인해주세요.")
-      }
-    }).fail(function (request, status, error){
-      console.log(status)
-      console.log(error)
-      alert("에러가 발생했습니다.");
-    });
-  }
-
   function addTask(button) {
     const list = button.parentNode;
     const newTask = document.createElement('div');
     newTask.className = 'card';
     newTask.textContent = 'New Task';
     list.insertBefore(newTask, button);
-  }
-
-  function addColumn() {
-    let data = {
-      boardId : board_id,
-      title : "new Column"
-    }
-
-    $.ajax({
-      type: "POST",
-      url:'/api/columns',
-      data: JSON.stringify(data),
-      contentType:"application/json; charset=urf-8",
-      dataType:"json"
-    }).done(function(res){
-      console.log(res)
-      console.log(res.status)
-      window.location.reload()
-    }).fail(function (request, status, error){
-      console.log(status)
-      console.log(error)
-      alert("에러가 발생했습니다.");
-    });
   }
 
   // ============ 모든 칼럼 및 카드 조회 ===============
@@ -240,12 +231,13 @@
                 let temp_html1 = `
                                       <div class="column" style="text-decoration-line: none;">
                                             <div class="list" id = "columns-list" >
-                                              <a href = api/columns/${columnsId} class= "col-3">
                                                 <div class="list-title">
-                                                  <span>${title}</span>
-                                                  <div class="delete-board-btn" onclick="deleteColumn(this)">x</div>
+                                                  <a href = api/columns/${columnsId} class= "col-3">
+                                                    <span>${title}</span>
+                                                  </a>
+                                                  <div class="delete-board-btn" onclick="deleteColumns(${columnsId})">x</div>
                                                 </div>
-                                              </a>
+
                                               <div id="card-list">`
 
 
@@ -274,6 +266,7 @@
             });
   }
 
+
   // ============ 보드 삭제 ===============
   function deleteBoard() {
     window.location.href = "/boards/delete/"+board_id;
@@ -283,6 +276,91 @@
   function updateBoard() {
     window.location.href = "/boards/update/"+board_id;
   }
+
+  // ============ 컬럼 추가 ===============
+  function openModal() {
+    const modal = document.getElementById("myModal");
+    modal.style.display = "block";
+  }
+
+  function closeModal() {
+    const modal = document.getElementById("myModal");
+    modal.style.display = "none";
+  }
+
+  const closeModalButton = document.getElementById("closeModal");
+  closeModalButton.addEventListener("click", closeModal);
+
+  function addColumn() {
+    let data = {
+      boardId : board_id,
+      title : $('#inputColumnName').val()
+    }
+
+    $.ajax({
+      type: "POST",
+      url:'/api/columns',
+      data: JSON.stringify(data),
+      contentType:"application/json; charset=urf-8",
+      dataType:"json"
+    }).done(function(res){
+      console.log(res)
+      console.log(res.status)
+      window.location.reload()
+    }).fail(function (request, status, error){
+      console.log(status)
+      console.log(error)
+      alert("에러가 발생했습니다.");
+    });
+  }
+
+  function deleteColumns(column_id) {
+    let column_url = '/api/columns/delete/' + column_id;
+    console.log(column_url)
+    $.ajax({
+      type: "DELETE",
+      url: column_url,
+      dataType:"json"
+    }).done(function(res){
+      console.log(res)
+      console.log(res.status)
+      if (res.statusCode === 200) {
+        alert("컬럼을 삭제했습니다.")
+        window.location.reload()
+      } else if (res.statusCode === 400) {
+        alert("컬럼 삭제에 실패했습니다")
+      }
+    }).fail(function (request, status, error){
+      console.log(status)
+      console.log(error)
+      alert("에러가 발생했습니다.");
+    });
+  }
+
+  // function deleteColumns(column_id) {
+  //     let column_url = '/api/columns/delete/' + column_id;
+  //     console.log(column_url);
+  //
+  //     fetch(column_url, {
+  //         method: "DELETE"
+  //     })
+  //         .then(response => response.json())
+  //         .then(res => {
+  //             console.log(res);
+  //             console.log(res.status);
+  //             if (res.status === 200) {
+  //                 alert("컬럼을 삭제했습니다.");
+  //                 window.location.href = '/boards/' + board_id;
+  //             } else if (res.status === 400) {
+  //                 alert("컬럼 삭제에 실패했습니다.");
+  //             }
+  //         })
+  //         .catch(error => {
+  //             console.error("Error:", error);
+  //             alert("에러가 발생했습니다.");
+  //         });
+  // }
+
 </script>
 </body>
 </html>
