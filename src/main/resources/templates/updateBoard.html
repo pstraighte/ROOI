@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Board</title>
+    <title>Update Board</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -61,39 +61,46 @@
 </head>
 <body>
 <div class="container">
-    <h1>새로운 보드를 생성해주세요!</h1>
-    <form id="create-board-form">
-        <label for="head">색상</label>
-        <input type="color" id="head" name="head" value="#ffffff"/>
+    <h1>나만의 보드를 관리하세요!</h1>
+    <div>
+        <label for="color">색상</label>
+        <input type="color" id="color" value="#ffffff"/>
+    </div>
+    <div>
         <input type="text" placeholder="보드 이름" onfocus="this.placeholder=''" onblur="this.placeholder='보드 이름'"
-               id="board-title" required>
+               id="title" required>
+    </div>
+    <div>
         <input type="text" placeholder="보드 설명" onfocus="this.placeholder=''" onblur="this.placeholder='보드 설명'"
-               id="board-contents" required>
-        <button type="submit">생성하기</button>
-    </form>
+               id="contents" required>
+    </div>
+    <button onclick="updateBoard()">수정하기</button>
 </div>
 <script>
-    const createBoardForm = document.getElementById('create-board-form');
-    createBoardForm.addEventListener('submit', createBoard);
+    function updateBoard() {
+        var title = document.getElementById("title").value;
+        var contents = document.getElementById("contents").value;
+        var color = document.getElementById("color").value;
 
-    async function createBoard(event) {
-        event.preventDefault();
-        const boardTitle = document.getElementById('board-title').value;
-        const boardContents = document.getElementById('board-contents').value;
-        const boardColor = document.getElementById('head').value;
+        var updatedBoard = {
+            title: title,
+            contents: contents,
+            color: color
+        };
+
+        var boardId = window.location.pathname.split('/').pop();
+
         try {
-            const response = await fetch('/api/boards', {
-                method: 'POST',
+            fetch(`/api/boards/${boardId}`, {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({title: boardTitle, contents: boardContents, color: boardColor})
-            });
-            if (!response.ok) {
-                throw new Error('보드 생성 실패');
-            }
-            const newBoard = await response.json();
-            alert(`보드 "${boardTitle}" 이(가) 생성 완료되었습니다!`);
+                body: JSON.stringify(updatedBoard)
+            })
+                .then(response => response.json())
+                .then(data => console.log('Success:', data))
+            alert(`보드 "${title}" 이(가) 수정 완료되었습니다!`);
             location.reload();
         } catch (error) {
             console.error(error);

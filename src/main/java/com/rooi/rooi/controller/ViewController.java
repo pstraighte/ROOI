@@ -8,28 +8,42 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class ViewController {
 
-    @GetMapping("/home/createboard")
-    public String createBoardPage() {
-        return "createboard";
-    }
-    @GetMapping("/boards")
-    public String boardsView() {
-        return "boards";
-    }
+	@GetMapping("/boards")
+	public String boardsView() {
+		return "boards";
+	}
 
-    @GetMapping("/columns")
-    public String columnsView() {
-        return "columns";
-    }
+	@GetMapping("/boards/create")
+	public String createBoardPage() {
+		return "createboard";
+	}
 
-    @GetMapping("/cards")
-    public String cardsView() {
-        return "cards";
-    }
+	@GetMapping("/boards/update/{id}")
+	public String updateBoardPage(@PathVariable Long id, Model model) {
+		model.addAttribute("id", id);
+		return "updateboard";
+	}
 
-    @GetMapping("/invite/{id}")
-    public String inviteUserPage(@PathVariable Long id, Model model){
-        model.addAttribute("boardId", id);
-        return "inviteUser";
-    }
+	// 아직 미구현
+//	@GetMapping("/boards/delete/{id}")
+//	public String deleteBoardPage(@PathVariable Long id, Model model) {
+//		model.addAttribute("id", id);
+//		return "deleteboard";
+//	}
+
+	@GetMapping("/columns")
+	public String columnsView() {
+		return "columns";
+	}
+
+	@GetMapping("/cards")
+	public String cardsView() {
+		return "cards";
+	}
+
+	@GetMapping("/invite/{id}")
+	public String inviteUserPage(@PathVariable Long id, Model model) {
+		model.addAttribute("boardId", id);
+		return "inviteUser";
+	}
 }

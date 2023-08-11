@@ -6,7 +6,6 @@ import com.rooi.rooi.dto.BoardResponseDto;
 import com.rooi.rooi.dto.InviteRequestDto;
 import com.rooi.rooi.entity.Board;
 import com.rooi.rooi.entity.User;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
