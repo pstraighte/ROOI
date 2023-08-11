@@ -80,10 +80,10 @@ public class BoardController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
 		}
 	}
-
+	// 초대한 유저 리스트
 	@GetMapping("/{id}/invite")
 	public List<InviteResponseDto> getInviteUserList(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 		log.info("Controller - getInviteUserList");
 		return boardService.getInviteUserList(id);
 	}
-}
+	}

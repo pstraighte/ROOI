@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -150,14 +150,14 @@
 
   </div>
 
-  <!--사이드바-->
-  <div class="sidebar">
-    <div class="sidebar-buttons">
-      <button onclick="inviteMembers()">Invite Members</button>
-      <button onclick="manageMembers()">Manage Members</button>
-      <button onclick="openModal()">Add Column</button>
-    </div>
+<!--사이드바-->
+<div class="sidebar">
+  <div class="sidebar-buttons">
+    <button data-board_id="1" onclick="openInvitePopup(this)">Invite Members</button>
+    <button data-board_id="1" onclick="openManagePopup(this)">Manage Members</button>
+    <button onclick="openModal()">Add Column</button>
   </div>
+</div>
 
   <!--칼럼과 카드-->
   <div class="column-container" id="columns">
@@ -191,12 +191,18 @@
   </script>
 
 <script>
-  function inviteMembers() {
-    window.location.href = "/post/invite";
+  // 현재 URL에서 boardId 추출
+  const pathParts = window.location.pathname.split('/');
+  const boardId = pathParts[pathParts.indexOf('boards') + 1];
+
+  // Invite Members 버튼 클릭 시
+  function openInvitePopup(button) {
+    const popupWindow = window.open(`/invite/${boardId}`, 'Invite Members', 'width=600,height=400');
+    // 나머지 함수들도 동일한 방식으로 boardId를 활용하여 URL을 생성
   }
 
-  function manageMembers() {
-    window.location.href = "/post/manage";
+  function openManagePopup(button) {
+    const popupWindow = window.open(`/manage/${boardId}`, 'Manage Members', 'width=600,height=400');
   }
 
 
@@ -314,28 +320,7 @@
     });
   }
 
-  function deleteColumns(column_id) {
-    let column_url = '/api/columns/delete/' + column_id;
-    console.log(column_url)
-    $.ajax({
-      type: "DELETE",
-      url: column_url,
-      dataType:"json"
-    }).done(function(res){
-      console.log(res)
-      console.log(res.status)
-      if (res.statusCode === 200) {
-        alert("컬럼을 삭제했습니다.")
-        window.location.reload()
-      } else if (res.statusCode === 400) {
-        alert("컬럼 삭제에 실패했습니다")
-      }
-    }).fail(function (request, status, error){
-      console.log(status)
-      console.log(error)
-      alert("에러가 발생했습니다.");
-    });
-  }
+
 
   // function deleteColumns(column_id) {
   //     let column_url = '/api/columns/delete/' + column_id;

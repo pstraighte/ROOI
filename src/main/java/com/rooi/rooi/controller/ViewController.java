@@ -3,13 +3,17 @@ package com.rooi.rooi.controller;
 import com.rooi.rooi.dto.BoardResponseDto;
 import com.rooi.rooi.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.rooi.rooi.dto.InviteResponseDto;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.List;
+
 @Controller
 public class ViewController {
+
 
     @Autowired
     private BoardService boardService;
@@ -65,5 +69,13 @@ public class ViewController {
     public String inviteUserPage(@PathVariable Long id, Model model){
         model.addAttribute("boardId", id);
         return "inviteUser";
+    }
+
+    //초대된 멤버 목록
+    @GetMapping("/manage/{id}")
+    public String manageUser(@PathVariable Long id, Model model) {
+        List<InviteResponseDto> inviteUserList = boardService.getInviteUserList(id);
+        model.addAttribute("inviteUserList", inviteUserList);
+        return "manageUser"; // manageUser.html 뷰 페이지로 이동
     }
 }
