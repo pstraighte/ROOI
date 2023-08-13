@@ -16,8 +16,9 @@
             background-color: #f0f0f0;
         }
         .container {
-            text-align: center;
-            padding: 70px;
+            /*text-align: center;*/
+            /*padding: 70px;*/
+            padding: 20px 70px;
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
@@ -57,16 +58,18 @@
     <h1>Create a New Card</h1>
     <form id="createCardForm">
         <label for="title">Title:</label>
-        <input type="text" id="title" name="title" required><br>
+        <input type="text" id="title" name="title" required>
 
-        <label for="description">Description:</label>
+        <label for="description">Description:</label><br>
         <textarea id="description" name="description" rows="4" required></textarea><br>
+        <br>
 
         <label for="deadLine">Deadline:</label>
         <input type="date" id="deadLine" name="deadLine" required><br>
-
+        <br>
         <label for="color">Color:</label>
         <input type="color" id="color" name="color"><br>
+        <br>
 
         <label for="worker">Worker:</label>
         <input type="text" id="worker" name="worker"><br>
@@ -132,4 +135,3 @@
 </script>
 </body>
 </html>
-
