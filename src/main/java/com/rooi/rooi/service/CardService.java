@@ -1,9 +1,6 @@
 package com.rooi.rooi.service;
 
-import com.rooi.rooi.dto.CardRequestDto;
-import com.rooi.rooi.dto.CardResponseDto;
-import com.rooi.rooi.dto.ColumnsRequestDto;
-import com.rooi.rooi.dto.WorkerRequestDto;
+import com.rooi.rooi.dto.*;
 import com.rooi.rooi.entity.Card;
 import com.rooi.rooi.entity.Columns;
 import com.rooi.rooi.entity.User;
@@ -33,6 +30,18 @@ public class CardService {
 
         return new CardResponseDto(card);
     }
+
+    //카드 개별조회
+    public CardResponseDto getCard(Long cardId) {
+        Card card = cardRepository.findById(cardId).orElseThrow(() -> new NullPointerException("카드를 찾을 수 없습니다."));
+
+        if(card != null) {
+            return new CardResponseDto(card);
+        }else {
+            return null;}
+    }
+
+
 
     // 카드 수정 API
     public void updateCard(Long id, CardRequestDto cardRequestDto) {

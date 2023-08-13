@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/draggable@1.0.0-beta.6/dist/draggable.bundle.css">
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/draggable@1.0.0-beta.6/dist/draggable.bundle.js"></script>
   <title>Trello Board</title>
   <style>
     body {
@@ -12,6 +15,16 @@
       padding: 0;
       display: flex;
     }
+    .sortable-placeholder {
+      background-color: rgba(0, 0, 0, 0.1);
+      border: 2px dashed #aaa;
+      height: 100px;
+      width: 100%;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     .sidebar {
       width: 250px;
       background-color: #333;
@@ -124,6 +137,7 @@
       .modal-content {
         width: 90%;
       }
+
     }
   </style>
 </head>
@@ -368,6 +382,30 @@
       alert("에러가 발생했습니다.");
     });
   }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const columnsContainer = document.querySelector('.column-container');
+
+    $(columnsContainer).sortable({
+      items: '.column',
+      handle: '.list-title',
+      placeholder: 'sortable-placeholder',
+      update: function(event, ui) {
+        const columns = $(columnsContainer).find('.column');
+        const columnOrder = columns.map(function() {
+          return $(this).data('columnId');
+        }).get();
+
+        // 여기서 업데이트된 컬럼 순서를 서버로 전송할 수 있습니다
+        // 예를 들어:
+        // $.post('/api/updateColumnOrder', { order: columnOrder }, function(response) {
+        //   console.log('Column order updated:', response);
+        // });
+
+        console.log('Column order:', columnOrder);
+      }
+    });
+  });
 
 
 
