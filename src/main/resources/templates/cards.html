@@ -103,13 +103,9 @@
                 // 서버로 카드 삭제 요청을 보냅니다.
                 await deleteCardFromServer(cardId);
 
-                // 화면에서 카드를 삭제합니다.
-                const cardElement = document.querySelector('.card');
-                cardElement.remove();
-                window.location.href = originalBoardPageUrl;
+                window.location.href = `/boards/1`;
             } catch (error) {
-                console.error('카드 삭제 중 오류 발생:', error);
-                alert('카드 삭제 중 오류가 발생했습니다.');
+
             }
         }
     });
