@@ -203,6 +203,16 @@
         }
     }
 
+    function showEditBox() {
+        const cardId = getCardIdFromURL();
+        if (!cardId) {
+            alert('카드 ID를 가져올 수 없습니다.');
+            return;
+        }
+        const popupWindow = window.open(`/card/${cardId}`, 'Edit Card', 'width=600,height=400');
+    }
+
+
 </script>
 </body>
 </html>
