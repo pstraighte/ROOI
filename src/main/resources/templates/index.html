@@ -440,7 +440,8 @@
 
   // ============ 카드 상세 페이지 이동 ===============
   function cardDetail(cardId, columnsId) {
-    window.location.href = "/" + columnsId + "/card/" + cardId
+    const popupUrl = "/" + columnsId + "/card/" + cardId;
+    const popupWindow = window.open(popupUrl, 'Card Details', 'width=600,height=400');
   }
 
 
