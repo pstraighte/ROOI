@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -97,8 +98,18 @@ public class ViewController {
         return "cards"; // manageUser.html 뷰 페이지로 이동
     }
 
+
+    @GetMapping("/card/{id}")
+    public ModelAndView showEditCardPage(@PathVariable Long id) {
+        ModelAndView modelAndView = new ModelAndView("editCard"); // Assumes that the view name is "editCard"
+        // You might want to pass the id to the view if needed
+        modelAndView.addObject("cardId", id);
+        return modelAndView;
+    }
+}
+
 //    @GetMapping("/boards/api/{boardId}/card/{cardId}")
 //    public String showCard(@PathVariable Long boardId, @PathVariable Long cardId, Model model) {
 //        return "cards";
 //    }
-}
+
