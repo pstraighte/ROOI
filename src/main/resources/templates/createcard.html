@@ -54,66 +54,82 @@
 </head>
 <body>
 <div class="container">
-    <h1>새로운 카드를 생성해주세요!</h1>
-    <br>
-    <form id="create-card-form">
-        <label for="head">색상</label>
-        <input type="color" id="head" name="color" value="#ffffff"/>
-        <input type="text" placeholder="카드 이름" onfocus="this.placeholder=''" onblur="this.placeholder='카드 이름'" id="card-title" required>
-        <input type="text" placeholder="카드 설명" onfocus="this.placeholder=''" onblur="this.placeholder='카드 설명'" id="card-contents" required>
-        <input type="text" placeholder="작업자 설정" onfocus="this.placeholder=''" onblur="this.placeholder='작업자 설정'" id="card-worker" required>
-<!--        <input type="text" placeholder="작업자 변경" onfocus="this.placeholder=''" onblur="this.placeholder='작업자 변경'" id="card-workerRe">-->
-<!--        ㄴ필수구현 중 작업자 변경 기능도 있긴한데 넣을지말지 모르겠음-->
-        <label for="head">마감일 </label>
-        <input type="datetime-local" placeholder="마감일" onfocus="this.placeholder=''" onblur="this.placeholder='마감일'" id="card-deadline" required>
-        <button type="submit" id="create-card-button">생성하기</button>
+    <h1>Create a New Card</h1>
+    <form id="createCardForm">
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required><br>
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" rows="4" required></textarea><br>
+
+        <label for="deadLine">Deadline:</label>
+        <input type="date" id="deadLine" name="deadLine" required><br>
+
+        <label for="color">Color:</label>
+        <input type="color" id="color" name="color"><br>
+
+        <label for="worker">Worker:</label>
+        <input type="text" id="worker" name="worker"><br>
+
+        <!-- 컬럼 ID를 동적으로 가져와서 설정 -->
+        <input type="hidden" id="columnId" value="">
+
+        <button type="submit">Create Card</button>
     </form>
 </div>
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-    const createCardForm = document.getElementById('create-card-form');
-    const createCardButton = document.getElementById("create-card-button");
+    document.addEventListener('DOMContentLoaded', function() {
+        const createCardForm = document.getElementById('createCardForm');
+        const columnIdInput = document.getElementById('columnId');
 
-    createCardForm.addEventListener("submit", async (event) => {
-        event.preventDefault();
+        // 여기서 컬럼 ID 값을 가져와서 설정해줍니다.
+        const urlParams = new URLSearchParams(window.location.search);
+        const columnId = urlParams.get('columnId');
+        columnIdInput.value = columnId;
 
-        const color = document.getElementById('head').value;
-        const title = document.getElementById('card-title').value;
-        const contents = document.getElementById('card-contents').value;
-        const work = document.getElementById('card-worker').value;
-        const deadline = document.getElementById('card-deadline').value;
+        createCardForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
 
-        const requestData = {
-            color: color,
-            title: title,
-            contents: contents,
-            work : work,
-            deadline:deadline
-        };
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const deadLine = document.getElementById('deadLine').value;
+            const color = document.getElementById('color').value;
+            const worker = document.getElementById('worker').value;
+            const columnId = columnIdInput.value;
 
-        try {
-            const response = await fetch('/api/cards', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(requestData)
-            });
+            const requestData = {
+                title: title,
+                description: description,
+                deadLine: deadLine,
+                color: color,
+                worker: worker
+            };
 
-            if (!response.ok) {
-                const reponseData = await response.json();
-                const newCardId = reponseData.id;
-                alert("카드가 생성되었습니다.");
-                window.location.href = `/`
-            } else {
-                // 보드 생성 실패한 경우의 처리
-                alert("보드 생성에 실패했습니다.");
+            try {
+                const response = await fetch(`api/${columnId}/card`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (response.ok) {
+                    const responseData = await response.json();
+                    console.log('Card created:', responseData);
+                    alert('카드가 생성되었습니다.');
+                    window.close(); // 창을 닫습니다.
+                    window.opener.location.reload();
+
+                } else {
+                    console.error('Error creating card');
+                }
+            } catch (error) {
+                console.error('Error creating card:', error);
             }
-        } catch (error) {
-            console.error("Error creating board:", error);
-        }
-    });
+        });
     });
 </script>
 </body>
 </html>
+
