@@ -4,6 +4,8 @@ import com.rooi.rooi.entity.Card;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class CardResponseDto {
@@ -14,6 +16,7 @@ public class CardResponseDto {
     private LocalDate deadLine;
     private String color;
 //    private String worker;
+    private List<CommentResponseDto> commentList;
 
     public CardResponseDto(Card card) {
         this.id = card.getId();
@@ -23,5 +26,6 @@ public class CardResponseDto {
         this.deadLine = card.getDeadLine();
         this.color = card.getColor();
 //        this.worker=card.getWorkers();
+        this.commentList = card.getCommentList().stream().map(CommentResponseDto::new).collect(Collectors.toList());
     }
 }

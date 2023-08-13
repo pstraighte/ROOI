@@ -64,7 +64,7 @@
     <div class="worker" style="margin-top: 30px">
         <div>Worker</div>
         <div style="border: solid 1px gray; padding: 10px 10px 10px 10px" >
-            <span th:text="${card.description}">Worker List</span>
+            <span>Worker List</span>
         </div>
     </div>
     <div class="card-buttons">
@@ -75,30 +75,31 @@
 <hr>
     <div class="comments-section">
         <div style="margin-bottom: 10px">Comments</div>
-        <div class="comment-list" style="margin-bottom: 10px">Comment List</div>
-        <input type="text" id="comment-input" placeholder="Enter your comment">
-        <button onclick="addComment()">Add Comment</button>
+        <div class="comment-list" style="margin-bottom: 10px">
+            <ul th:each="comment : ${card.commentList}" style="border-bottom: solid 1px gray; padding-bottom: 15px">
+                    <span th:text="${comment.username}"></span> : <span th:text="${comment.content}"></span>
+                <div style="float: right">
+                    <button type="submit" class="btn btn-dark" id="comment-update-btn" onclick="" style="width: 55px; font-size: 12px">수 정</button>
+                    <button type="submit" class="btn btn-dark" id="comment-delete-btn" onclick="deleteComment()" style="width: 55px; font-size: 12px">삭 제</button>
+                </div>
+            </ul>
+        </div>
+        <div>
+            <input type="text" id="comment-input" placeholder="Enter your comment" style="width: 80%; height: 30px">
+            <button onclick="addComment()" style="height: 30px; float: right ">Add Comment</button>
+        </div>
+
 
     </div>
-<!--    //댓글반복구간-->
-    <div class="" id = "comment-list">
-        <div class="row comment-base-box" id="comment-base-box-${cardId}">
-            <div class="col-7" style="border-bottom: solid gray 1px">댓글 내용</div>
-            <div class="col-2" style="border-bottom: solid gray 1px; text-align: right">댓글 작성자</div>
-            <div class="col-2" style="border-bottom: solid gray 1px">
-                <button type="submit" class="btn btn-dark" id="comment-update-btn" onclick="" style="width: 55px; font-size: 12px">수 정</button>
-                <button type="submit" class="btn btn-dark" id="comment-delete-btn" onclick="deleteComment()" style="width: 55px; font-size: 12px">삭 제</button>
-            </div>
-            <div style="display: none" id="comment-id">${commentId}</div>
-        </div>
-        <div class="col-md-12" id="edit-box" style="">
-            <div class="comment-board mt-2">
-                <textarea class="content form-control col-sm-5" rows="1" id="input-edit-comment"></textarea>
-            </div>
-            <button type="submit" class="btn btn-dark" id="comment-edit-btn" onclick="" style="width: 55px; font-size: 12px;">확 인</button>
-            <button type="submit" class="btn btn-dark" id="comment-edit-cancel-btn" onclick="" style="width: 55px; font-size: 12px;">취 소</button>
-        </div>
-    </div>
+
+
+<!--        <div class="col-md-12" id="edit-box" style="">-->
+<!--            <div class="comment-board mt-2">-->
+<!--                <textarea class="content form-control col-sm-5" rows="1" id="input-edit-comment"></textarea>-->
+<!--            </div>-->
+<!--            <button type="submit" class="btn btn-dark" id="comment-edit-btn" onclick="" style="width: 55px; font-size: 12px;">확 인</button>-->
+<!--            <button type="submit" class="btn btn-dark" id="comment-edit-cancel-btn" onclick="" style="width: 55px; font-size: 12px;">취 소</button>-->
+<!--        </div>-->
 
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -157,6 +158,7 @@
         } catch (error) {
             console.error('Error adding comment:', error);
         }
+        window.location.reload()
     }
 
 
