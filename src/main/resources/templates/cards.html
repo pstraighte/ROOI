@@ -61,10 +61,11 @@
     <div class="card-content" style="margin-top: 30px">
         <span th:text="${card.description}">This is a description of the task.</span>
     </div>
-    <div class="worker" style="margin-top: 30px">
-        <div>Worker</div>
-        <div style="border: solid 1px gray; padding: 10px 10px 10px 10px" >
-            <span>Worker List</span>
+
+    <div class="deadline" style="margin-top: 30px">
+        <div>Deadline</div>
+        <div style="border: solid 1px gray; padding: 10px 10px 10px 10px">
+            <span th:text="${card.deadLine}">2023-08-31</span> <!-- 카드의 deadline 정보를 표시 -->
         </div>
     </div>
     <div class="card-buttons">
@@ -93,13 +94,6 @@
     </div>
 
 
-<!--        <div class="col-md-12" id="edit-box" style="">-->
-<!--            <div class="comment-board mt-2">-->
-<!--                <textarea class="content form-control col-sm-5" rows="1" id="input-edit-comment"></textarea>-->
-<!--            </div>-->
-<!--            <button type="submit" class="btn btn-dark" id="comment-edit-btn" onclick="" style="width: 55px; font-size: 12px;">확 인</button>-->
-<!--            <button type="submit" class="btn btn-dark" id="comment-edit-cancel-btn" onclick="" style="width: 55px; font-size: 12px;">취 소</button>-->
-<!--        </div>-->
 
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -177,9 +171,10 @@
                 }
 
                 await deleteCardFromServer(cardId);
-                history.back();
-
-                // window.location.href = `/boards/1`;
+                window.close();
+                if (window.opener) {
+                    window.opener.location.reload();
+                }
             } catch (error) {
 
             }
