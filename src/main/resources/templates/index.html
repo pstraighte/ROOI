@@ -518,27 +518,12 @@
       url: `/api/card/move/${cardId}/${newColumnId}`,
       success: function(response) {
         console.log("Card moved:", response);
-        // 이동이 성공하면 프론트엔드를 업데이트하는 작업을 수행할 수 있습니다.
-        // 예를 들어, getColumnInfo()를 호출하여 카드 및 컬럼을 업데이트할 수 있습니다.
-        getColumnInfo();
+        // 카드 이동 후 UI 업데이트 작업을 수행합니다.
       },
       error: function(error) {
         console.error("Error moving card:", error);
       }
     });
-  }
-  function allowDrop(event) {
-    event.preventDefault();
-  }
-
-  function drag(event) {
-    event.dataTransfer.setData('text', event.target.id);
-  }
-
-  function drop(event) {
-    event.preventDefault();
-    const data = event.dataTransfer.getData('text');
-    event.target.appendChild(document.getElementById(data));
   }
 </script>
 </body>
