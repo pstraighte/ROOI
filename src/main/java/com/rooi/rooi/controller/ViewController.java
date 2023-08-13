@@ -97,8 +97,8 @@ public class ViewController {
         return "cards"; // manageUser.html 뷰 페이지로 이동
     }
 
-    @GetMapping("/boards/api/{boardId}/card/{cardId}")
-    public String showCard(@PathVariable Long boardId, @PathVariable Long cardId, Model model) {
-        return "cards";
-    }
+//    @GetMapping("/boards/api/{boardId}/card/{cardId}")
+//    public String showCard(@PathVariable Long boardId, @PathVariable Long cardId, Model model) {
+//        return "cards";
+//    }
 }
