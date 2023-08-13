@@ -300,7 +300,7 @@
                   let cardId = cardList[j].id;
 
                   let temp_html2 = `<a href = api/${columnsId}/card/${cardId} class= "col-3" style="text-decoration-line: none;">
-                                  <div class="card">${cardTitle}</div>
+                                  <div class="card" draggable="true">${cardTitle}</div>
                                 </a>`
 
                   cardList_html += temp_html2;
@@ -394,6 +394,29 @@
   //             alert("에러가 발생했습니다.");
   //         });
   // }
+  // ============ 카드 이동 ===============
+  // 카드를 드래그할 때의 처리
+  let draggedCard = null;
+
+  document.addEventListener('dragstart', function(event) {
+    if (event.target.classList.contains('card')) {
+      draggedCard = event.target;
+    }
+  });
+
+  document.addEventListener('dragover', function(event) {
+    event.preventDefault();
+  });
+
+  document.addEventListener('drop', function(event) {
+    event.preventDefault();
+
+    if (event.target.classList.contains('card') && draggedCard) {
+      // 카드 순서 변경 처리
+      event.target.parentElement.insertBefore(draggedCard, event.target.nextSibling);
+      draggedCard = null;
+    }
+  });
 
 </script>
 </body>
