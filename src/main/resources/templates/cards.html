@@ -59,15 +59,23 @@
 </head>
 <body>
 <div class="card">
-    <div class="card-title">Task 1</div>
-    <div class="card-content">
-        This is a description of the task.
+    <div class="card-title"><span th:text="${card.title}">Task 1</span></div>
+    <div class="card-content" style="margin-top: 30px">
+        <span th:text="${card.description}">This is a description of the task.</span>
+    </div>
+    <div class="worker" style="margin-top: 30px">
+        <div>Worker</div>
+        <div style="border: solid 1px gray; padding: 10px 10px 10px 10px" >
+            <span th:text="${card.description}">Worker List</span>
+        </div>
     </div>
 <hr>
     <div class="comments-section">
+        <div style="margin-bottom: 10px">Comments</div>
+        <div class="comment-list" style="margin-bottom: 10px">Comment List</div>
         <input type="text" id="comment-input" placeholder="Enter your comment">
         <button onclick="addComment()">Add Comment</button>
-        <div class="comment-list"></div>
+
     </div>
     <div class="card-buttons">
         <button class="edit-button">Edit</button>

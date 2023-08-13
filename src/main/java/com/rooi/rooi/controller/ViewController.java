@@ -1,7 +1,9 @@
 package com.rooi.rooi.controller;
 
 import com.rooi.rooi.dto.BoardResponseDto;
+import com.rooi.rooi.dto.CardResponseDto;
 import com.rooi.rooi.service.BoardService;
+import com.rooi.rooi.service.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.rooi.rooi.dto.InviteResponseDto;
 import org.springframework.stereotype.Controller;
@@ -14,9 +16,10 @@ import java.util.List;
 @Controller
 public class ViewController {
 
-
     @Autowired
     private BoardService boardService;
+    @Autowired
+    private CardService cardService;
 
     //보드를 생성함면 보이는 보드페이지 이때 주소는 /boards/{id} 이지만 데이터는 해당 보드의 칼럼과 카드를 모두 가져온다
     @GetMapping("/boards/{id}")
@@ -82,5 +85,15 @@ public class ViewController {
         List<InviteResponseDto> inviteUserList = boardService.getInviteUserList(id);
         model.addAttribute("inviteUserList", inviteUserList);
         return "manageUser"; // manageUser.html 뷰 페이지로 이동
+    }
+
+    //카드 상세 페이지
+    @GetMapping("/{columnId}/card/{cardId}")
+    public String cardDetail(@PathVariable Long columnId, @PathVariable Long cardId, Model model) {
+        CardResponseDto card = cardService.getCard(cardId);
+
+        model.addAttribute("columnId", columnId);
+        model.addAttribute("card", card);
+        return "cards"; // manageUser.html 뷰 페이지로 이동
     }
 }
