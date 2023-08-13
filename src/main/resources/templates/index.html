@@ -198,7 +198,7 @@
           <span class="close" id="closeModal2">&times;</span>
           <div>
               <input type="text" class="form-control" id="inputColumnName2" placeholder="Column Name" style="width: 300px; height: 30px">
-              <button class="btn btn-dark" id="btn-login2" style="margin-left: 10px" onclick="addColumn()"><strong>생성</strong></button>
+              <button class="btn btn-dark" id="btn-login2" style="margin-left: 10px" onclick="updateColumn()"><strong>수정</strong></button>
           </div>
       </div>
 
@@ -309,9 +309,7 @@
                                       <div class="column" style="text-decoration-line: none;">
                                             <div class="list" id = "columns-list" >
                                                 <div class="list-title">
-                                                  <a href = api/columns/${columnsId} class= "col-3">
-                                                    <span>${title}</span>
-                                                  </a>
+                                                    <span onclick="openModal2(${columnsId})" onmouseover="this.style.cursor='pointer'">${title}</span>
                                                   <div class="delete-board-btn" onclick="deleteColumns(${columnsId})">x</div>
                                                 </div>
 
@@ -446,19 +444,46 @@
 
 
   // ============ 컬럼 수정 ===============
+  let columnId = null;
+  function openModal2(column_id) {
+    const modal2 = document.getElementById("myModal2");
+    modal2.style.display = "block";
 
-  function openModal2() {
-    const modal = document.getElementById("myModal2");
-    modal.style.display = "block";
+    columnId = column_id;
   }
 
   function closeModal2() {
-    const modal = document.getElementById("myModal");
-    modal.style.display = "none";
+    const modal2 = document.getElementById("myModal2");
+    modal2.style.display = "none";
   }
 
-  const closeModalButton2 = document.getElementById("closeModal");
-  closeModalButton.addEventListener("click", closeModal2);
+  const closeModalButton2 = document.getElementById("closeModal2");
+  closeModalButton2.addEventListener("click", closeModal2);
+
+
+  function updateColumn() {
+    let data = {
+      boardId : board_id,
+      title : $('#inputColumnName2').val()
+    }
+    console.log(columnId)
+    $.ajax({
+      type: "PUT",
+      url:'/api/columns/'+columnId,
+      data: JSON.stringify(data),
+      contentType:"application/json; charset=urf-8",
+      dataType:"json"
+    }).done(function(res){
+      console.log(res)
+      console.log(res.status)
+
+      window.location.reload()
+    }).fail(function (request, status, error){
+      console.log(status)
+      console.log(error)
+      alert("에러가 발생했습니다.");
+    });
+  }
 </script>
 </body>
 </html>

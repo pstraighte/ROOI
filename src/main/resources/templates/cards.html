@@ -77,85 +77,86 @@
         <button onclick="addComment()">Add Comment</button>
 
     </div>
-    <div class="card-buttons">
-        <button class="edit-button">Edit</button>
-        <button class="delete-button">Delete</button>
+<!--    //댓글반복구간-->
+    <div class="" id = "comment-list">
+        <div class="row comment-base-box" id="comment-base-box-${cardId}">
+            <div class="col-7" style="border-bottom: solid gray 1px">댓글 내용</div>
+            <div class="col-2" style="border-bottom: solid gray 1px; text-align: right">댓글 작성자</div>
+            <div class="col-2" style="border-bottom: solid gray 1px">
+                <button type="submit" class="btn btn-dark" id="comment-update-btn" onclick="" style="width: 55px; font-size: 12px">수 정</button>
+                <button type="submit" class="btn btn-dark" id="comment-delete-btn" onclick="deleteComment()" style="width: 55px; font-size: 12px">삭 제</button>
+            </div>
+            <div style="display: none" id="comment-id">${commentId}</div>
+        </div>
+        <div class="col-md-12" id="edit-box" style="">
+            <div class="comment-board mt-2">
+                <textarea class="content form-control col-sm-5" rows="1" id="input-edit-comment"></textarea>
+            </div>
+            <button type="submit" class="btn btn-dark" id="comment-edit-btn" onclick="" style="width: 55px; font-size: 12px;">확 인</button>
+            <button type="submit" class="btn btn-dark" id="comment-edit-cancel-btn" onclick="" style="width: 55px; font-size: 12px;">취 소</button>
+        </div>
     </div>
 
 </div>
-
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    const currentURL = window.location.href;
 
-    // 현재 페이지의 URL을 가져옵니다.
-    const currentUrl = window.location.href;
+    function getCardIdFromURL() {
+        const cardIdPattern = /\/card\/(\d+)/; // URL에서 숫자로 된 카드 ID를 추출하는 정규식
+        const match = currentURL.match(cardIdPattern);
 
-    // URL의 끝부분에 있는 숫자를 추출하여 카드 ID로 사용합니다.
-    const cardId = extractCardIdFromUrl(currentUrl);
-
-
-    // 카드 삭제 버튼 클릭 시
-    const deleteButton = document.querySelector('.delete-button');
-    deleteButton.addEventListener('click', async () => {
-        const confirmDelete = confirm('이 카드를 삭제하시겠습니까?');
-        if (confirmDelete) {
-            try {
-                // 서버로 카드 삭제 요청을 보냅니다.
-                await deleteCardFromServer(cardId);
-
-                window.location.href = `/boards/1`;
-            } catch (error) {
-
-            }
+        if (match && match.length > 1) {
+            return match[1]; // 첫 번째 캡처 그룹이 카드 ID입니다.
+        } else {
+            return null; // 카드 ID를 추출할 수 없는 경우
         }
-    });
-
-    // URL에서 카드 ID를 추출하는 함수
-    function extractCardIdFromUrl(url) {
-        const parts = url.split('/');
-        const cardId = parts[parts.length - 1];
-        return cardId;
     }
 
-    async function deleteCardFromServer(cardId) {
+    async function addComment() {
+        const commentInput = document.getElementById('comment-input');
+        const commentText = commentInput.value.trim();
+        const cardId = getCardIdFromURL();
+
+        if (!cardId) {
+            alert('카드 ID를 가져올 수 없습니다.');
+            return;
+        }
+
+        if (!commentText) {
+            alert('Please enter a comment.');
+            return;
+        }
+
+        // AJAX를 사용하여 댓글을 서버에 전송하고 저장
         try {
-            const response = await fetch(`/api/card/${cardId}`, {
-                method: 'DELETE',
+            const response = await fetch(`/api/card/comment`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    content: commentText,
+                    card_id: cardId  // 카드 ID를 입력하세요
+                })
             });
 
-            if (response.ok) {
-                const responseData = await response.json();
-                console.log('카드 삭제 성공:', responseData.message);
-            } else {
-                throw new Error('카드 삭제 실패');
+            if (!response.ok) {
+                alert('Failed to add comment.');
+                return;
             }
+
+            // // 댓글 목록 갱신
+            // await fetchAndDisplayComments();
+
+            // 입력 폼 비우기
+            commentInput.value = '';
         } catch (error) {
-            console.error('카드 삭제 오류:', error);
-            // throw error;
+            console.error('Error adding comment:', error);
         }
     }
 
 
-
-        function addComment() {
-    const commentInput = document.getElementById('comment-input');
-    const commentText = commentInput.value.trim();
-
-    if (!commentText) {
-        alert('Please enter a comment.');
-        return;
-    }
-
-    const commentList = document.querySelector('.comment-list');
-    const newComment = document.createElement('div');
-    newComment.className = 'comment';
-    newComment.textContent = commentText;
-
-    commentList.appendChild(newComment);
-
-    // 입력 폼 비우기
-    commentInput.value = '';
-}
 </script>
 </body>
 </html>
