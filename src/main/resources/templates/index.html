@@ -307,7 +307,7 @@
                 let title = data[i].title;
                 let cardList = data[i].cardList;
                 let temp_html1 = `
-                                      <div class="column" style="text-decoration-line: none;">
+                                      <div class="column" style="text-decoration-line: none;" ondrop="drop(event)" ondragover="allowDrop(event)">
                                             <div class="list" id = "columns-list" >
                                                 <div class="list-title">
                                                     <span onclick="openModal2(${columnsId})" onmouseover="this.style.cursor='pointer'">${title}</span>
@@ -323,7 +323,7 @@
                   let cardTitle = cardList[j].title;
                   let cardId = cardList[j].id;
 
-                  let temp_html2 = `<div class="card" onclick="cardDetail(${cardId}, ${columnsId})">${cardTitle}</div>`
+                  let temp_html2 = `<div class="card" onclick="cardDetail(${cardId}, ${columnsId})" draggable="true" ondragstart="drag(event)">${cardTitle}</div>`
 
                   cardList_html += temp_html2;
                 }
@@ -526,7 +526,19 @@
       }
     });
   }
+  function allowDrop(event) {
+    event.preventDefault();
+  }
 
+  function drag(event) {
+    event.dataTransfer.setData('text', event.target.id);
+  }
+
+  function drop(event) {
+    event.preventDefault();
+    const data = event.dataTransfer.getData('text');
+    event.target.appendChild(document.getElementById(data));
+  }
 </script>
 </body>
 </html>
