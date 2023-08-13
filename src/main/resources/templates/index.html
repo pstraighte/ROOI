@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -189,8 +189,20 @@
           </a>
         </div>
      <a href="/home/createcard"> <div class="add-task-btn" >+</div></a>
+<!--         craretecar페이지 링크 추가 -->
       </div>
     </div>
+  </div>
+
+  <div class="modal" id="myModal2">
+      <div class="modal-content">
+          <span class="close" id="closeModal2">&times;</span>
+          <div>
+              <input type="text" class="form-control" id="inputColumnName2" placeholder="Column Name" style="width: 300px; height: 30px">
+              <button class="btn btn-dark" id="btn-login2" style="margin-left: 10px" onclick="updateColumn()"><strong>수정</strong></button>
+          </div>
+      </div>
+
   </div>
 
 <!--상단바-->
@@ -298,9 +310,7 @@
                                       <div class="column" style="text-decoration-line: none;">
                                             <div class="list" id = "columns-list" >
                                                 <div class="list-title">
-                                                  <a href = api/columns/${columnsId} class= "col-3">
-                                                    <span>${title}</span>
-                                                  </a>
+                                                    <span onclick="openModal2(${columnsId})" onmouseover="this.style.cursor='pointer'">${title}</span>
                                                   <div class="delete-board-btn" onclick="deleteColumns(${columnsId})">x</div>
                                                 </div>
 
@@ -313,9 +323,7 @@
                   let cardTitle = cardList[j].title;
                   let cardId = cardList[j].id;
 
-                  let temp_html2 = `<a href = api/${columnsId}/card/${cardId} class= "col-3" style="text-decoration-line: none;">
-                                  <div class="card" draggable="true">${cardTitle}</div>
-                                </a>`
+                  let temp_html2 = `<div class="card" onclick="cardDetail(${cardId}, ${columnsId})">${cardTitle}</div>`
 
                   cardList_html += temp_html2;
                 }
@@ -375,7 +383,30 @@
       // 컬럼이 성공적으로 생성되면 컬럼 아이디를 가져와서 저장합니다.
       const columnId = res.columnId; // 여기에서 columnId를 가져옵니다.
 
-      window.location.reload();
+      window.location.reload()
+    }).fail(function (request, status, error){
+      console.log(status)
+      console.log(error)
+      alert("에러가 발생했습니다.");
+    });
+  }
+
+  function deleteColumns(column_id) {
+    let column_url = '/api/columns/delete/' + column_id;
+    console.log(column_url)
+    $.ajax({
+      type: "DELETE",
+      url: column_url,
+      dataType:"json"
+    }).done(function(res){
+      console.log(res)
+      console.log(res.status)
+      if (res.statusCode === 200) {
+        alert("컬럼을 삭제했습니다.")
+        window.location.reload()
+      } else if (res.statusCode === 400) {
+        alert("컬럼 삭제에 실패했습니다")
+      }
     }).fail(function (request, status, error){
       console.log(status)
       console.log(error)
@@ -407,32 +438,53 @@
     });
   });
 
+  // ============ 카드 상세 페이지 이동 ===============
+  function cardDetail(cardId, columnsId) {
+    window.location.href = "/" + columnsId + "/card/" + cardId
+  }
 
 
-  // function deleteColumns(column_id) {
-  //     let column_url = '/api/columns/delete/' + column_id;
-  //     console.log(column_url);
-  //
-  //     fetch(column_url, {
-  //         method: "DELETE"
-  //     })
-  //         .then(response => response.json())
-  //         .then(res => {
-  //             console.log(res);
-  //             console.log(res.status);
-  //             if (res.status === 200) {
-  //                 alert("컬럼을 삭제했습니다.");
-  //                 window.location.href = '/boards/' + board_id;
-  //             } else if (res.status === 400) {
-  //                 alert("컬럼 삭제에 실패했습니다.");
-  //             }
-  //         })
-  //         .catch(error => {
-  //             console.error("Error:", error);
-  //             alert("에러가 발생했습니다.");
-  //         });
-  // }
+  // ============ 컬럼 수정 ===============
+  let columnId = null;
+  function openModal2(column_id) {
+    const modal2 = document.getElementById("myModal2");
+    modal2.style.display = "block";
 
+    columnId = column_id;
+  }
+
+  function closeModal2() {
+    const modal2 = document.getElementById("myModal2");
+    modal2.style.display = "none";
+  }
+
+  const closeModalButton2 = document.getElementById("closeModal2");
+  closeModalButton2.addEventListener("click", closeModal2);
+
+
+  function updateColumn() {
+    let data = {
+      boardId : board_id,
+      title : $('#inputColumnName2').val()
+    }
+    console.log(columnId)
+    $.ajax({
+      type: "PUT",
+      url:'/api/columns/'+columnId,
+      data: JSON.stringify(data),
+      contentType:"application/json; charset=urf-8",
+      dataType:"json"
+    }).done(function(res){
+      console.log(res)
+      console.log(res.status)
+
+      window.location.reload()
+    }).fail(function (request, status, error){
+      console.log(status)
+      console.log(error)
+      alert("에러가 발생했습니다.");
+    });
+  }
   // ============ 카드 이동 ===============
   let draggedCard = null;
 
