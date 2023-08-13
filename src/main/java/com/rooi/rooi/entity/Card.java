@@ -32,6 +32,9 @@ public class Card {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate deadLine; //포스트맨 작성식 "deadLine" : "2023-01-18"
 
+    @Column(name = "card_color")
+    private String color;
+
     // 테이블을 하나 더 만들어서 관리해야 할 듯
 //    @Column(name = "card_worker")
 //    private String worker;
@@ -51,13 +54,31 @@ public class Card {
     public Card(Columns columns, CardRequestDto cardRequestDto) {
         this.title = cardRequestDto.getTitle();
         this.description = cardRequestDto.getDescription();
-        this.columns = columns;
         this.deadLine = cardRequestDto.getDeadLine();
+        this.color = cardRequestDto.getColor();
+//        this.workers = cardRequestDto.getWorker();
+        this.columns = columns;
     }
 
     public void update(CardRequestDto cardRequestDto) {
         this.title = cardRequestDto.getTitle();
         this.description = cardRequestDto.getDescription();
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setDeadLine(LocalDate deadLine) {
+        this.deadLine = deadLine;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public void moveCard(Columns columns) {

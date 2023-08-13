@@ -9,4 +9,6 @@ public class CardRequestDto {
     private String title;
     private String description;
     private LocalDate deadLine;
+    private String color;
+    private String worker;
 }

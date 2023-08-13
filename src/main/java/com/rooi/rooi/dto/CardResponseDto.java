@@ -12,7 +12,8 @@ public class CardResponseDto {
     private String description;
     private Long columnId;
     private LocalDate deadLine;
-
+    private String color;
+//    private String worker;
 
     public CardResponseDto(Card card) {
         this.id = card.getId();
@@ -20,5 +21,7 @@ public class CardResponseDto {
         this.description = card.getDescription();
         this.columnId = card.getColumns().getId();
         this.deadLine = card.getDeadLine();
+        this.color = card.getColor();
+//        this.worker=card.getWorkers();
     }
 }

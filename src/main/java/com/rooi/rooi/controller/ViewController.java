@@ -63,6 +63,11 @@ public class ViewController {
     public String cardsView() {
         return "cards";
     }
+  
+      @GetMapping("/home/createcard")
+    public String createCardPage() {
+        return "createcard";
+    }
 
     //특정 아이디 값을 같은 유저를 초대하는 메서드로 보인다.
     @GetMapping("/invite/{id}")
