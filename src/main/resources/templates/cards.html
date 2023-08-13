@@ -25,10 +25,8 @@
         }
         .edit-button,
         .delete-button {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
+            background-color: #ff0000;
+            color: white;
         }
         .edit-button {
             background-color: #007bff;
@@ -69,6 +67,11 @@
             <span th:text="${card.description}">Worker List</span>
         </div>
     </div>
+    <div class="card-buttons">
+        <button class="edit-button" onclick="showEditBox()">Edit</button>
+        <button class="delete-button" onclick="deleteCard()">Delete</button>
+    </div>
+</div>
 <hr>
     <div class="comments-section">
         <div style="margin-bottom: 10px">Comments</div>
@@ -156,6 +159,47 @@
         }
     }
 
+
+
+    // 카드 삭제 버튼 클릭 시
+    const deleteButton = document.querySelector('.delete-button');
+    deleteButton.addEventListener('click', async () => {
+        const confirmDelete = confirm('이 카드를 삭제하시겠습니까?');
+        if (confirmDelete) {
+            try {
+                // 서버로 카드 삭제 요청을 보냅니다.
+                const cardId = getCardIdFromURL(); // 카드 ID를 가져옵니다.
+                if (!cardId) {
+                    alert('카드 ID를 가져올 수 없습니다.');
+                    return;
+                }
+
+                await deleteCardFromServer(cardId);
+
+                window.location.href = `/boards/1`;
+            } catch (error) {
+
+            }
+        }
+    });
+
+    async function deleteCardFromServer(cardId) {
+        try {
+            const response = await fetch(`/api/card/${cardId}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                const responseData = await response.json();
+                console.log('카드 삭제 성공:', responseData.message);
+            } else {
+                throw new Error('카드 삭제 실패');
+            }
+        } catch (error) {
+            console.error('카드 삭제 오류:', error);
+            // throw error;
+        }
+    }
 
 </script>
 </body>
