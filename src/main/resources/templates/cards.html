@@ -177,8 +177,9 @@
                 }
 
                 await deleteCardFromServer(cardId);
+                history.back();
 
-                window.location.href = `/boards/1`;
+                // window.location.href = `/boards/1`;
             } catch (error) {
 
             }
@@ -209,7 +210,9 @@
             alert('카드 ID를 가져올 수 없습니다.');
             return;
         }
-        const popupWindow = window.open(`/card/${cardId}`, 'Edit Card', 'width=600,height=400');
+        // const popupWindow = window.open(`/card/${cardId}`, 'Edit Card', 'width=600,height=400');
+
+        window.location.href = `/card/${cardId}`
     }
 
 
