@@ -177,8 +177,9 @@
                 }
 
                 await deleteCardFromServer(cardId);
+                history.back();
 
-                window.location.href = `/boards/1`;
+                // window.location.href = `/boards/1`;
             } catch (error) {
 
             }
