@@ -17,6 +17,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class CardService {
+
     private final UserRepository userRepository;
     private final CardRepository cardRepository;
     private final ColumnsRepository columnsRepository;
