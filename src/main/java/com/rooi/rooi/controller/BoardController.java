@@ -1,10 +1,6 @@
 package com.rooi.rooi.controller;
 
-import com.rooi.rooi.dto.ApiResponseDto;
-import com.rooi.rooi.dto.BoardRequestDto;
-import com.rooi.rooi.dto.BoardResponseDto;
-import com.rooi.rooi.dto.InviteRequestDto;
-import com.rooi.rooi.entity.Board;
+import com.rooi.rooi.dto.*;
 import com.rooi.rooi.security.UserDetailsImpl;
 import com.rooi.rooi.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +22,7 @@ public class BoardController {
 
 	// 내가 작성한 전체 보드 정보 가져오기
 	@GetMapping // URL은 마음대로 수정해서 사용하세요 @@
-	public List<Board> getAllMyBoards(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+	public List<BoardResponseDto> getAllMyBoards(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		log.info("Controller - getAllMyBoards");
 		return boardService.getAllMyBoards(userDetails.getUser());
 	}
@@ -84,4 +80,10 @@ public class BoardController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
 		}
 	}
-}
+	// 초대한 유저 리스트
+	@GetMapping("/{id}/invite")
+	public List<InviteResponseDto> getInviteUserList(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+		log.info("Controller - getInviteUserList");
+		return boardService.getInviteUserList(id);
+	}
+	}

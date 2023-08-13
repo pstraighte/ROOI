@@ -8,16 +8,26 @@ import com.rooi.rooi.entity.User;
 import com.rooi.rooi.repository.BoardRepository;
 import com.rooi.rooi.repository.ColumnsRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class ColumnsService {
 
     private final ColumnsRepository columnsRepository;
     private final BoardRepository boardRepository;
 
-
+    // 해당 보드의 컬럼 전체 조회 API
+    public List<ColumnsResponseDto> getAllColumns(Long boardId) {
+        return columnsRepository.findAllByBoardId(boardId).stream()
+                .map(ColumnsResponseDto::new)
+                .collect(Collectors.toList());
+    }
 
     public ColumnsResponseDto getColumns(Long columnsId) {
         Columns columns = columnsRepository.findById(columnsId).orElseThrow(null);
@@ -52,10 +62,14 @@ public class ColumnsService {
 
 
     public void deleteColumns(Long columnsId, User user){
+        log.info("컬럼 찾기");
         Columns columns = columnsRepository.findById(columnsId).orElseThrow(()-> new IllegalArgumentException("컬럼을 찾을 수 없습니다"));
+        log.info("컬럼 삭제 전");
         columnsRepository.delete(columns);
+        log.info("컬럼 삭제 후");
+
     }
 
 
-    }
+}
 
