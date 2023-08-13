@@ -74,28 +74,94 @@
         <button class="delete-button">Delete</button>
     </div>
 </div>
-
-
 <script>
-    function addComment() {
-    const commentInput = document.getElementById('comment-input');
-    const commentText = commentInput.value.trim();
+    const currentURL = window.location.href;
 
-    if (!commentText) {
-        alert('Please enter a comment.');
-        return;
+    function getCardIdFromURL() {
+        const cardIdPattern = /\/card\/(\d+)/; // URL에서 숫자로 된 카드 ID를 추출하는 정규식
+        const match = currentURL.match(cardIdPattern);
+
+        if (match && match.length > 1) {
+            return match[1]; // 첫 번째 캡처 그룹이 카드 ID입니다.
+        } else {
+            return null; // 카드 ID를 추출할 수 없는 경우
+        }
     }
 
-    const commentList = document.querySelector('.comment-list');
-    const newComment = document.createElement('div');
-    newComment.className = 'comment';
-    newComment.textContent = commentText;
+    async function addComment() {
+        const commentInput = document.getElementById('comment-input');
+        const commentText = commentInput.value.trim();
+        const cardId = getCardIdFromURL();
 
-    commentList.appendChild(newComment);
+        if (!cardId) {
+            alert('카드 ID를 가져올 수 없습니다.');
+            return;
+        }
 
-    // 입력 폼 비우기
-    commentInput.value = '';
-}
+        if (!commentText) {
+            alert('Please enter a comment.');
+            return;
+        }
+
+        // AJAX를 사용하여 댓글을 서버에 전송하고 저장
+        try {
+            const response = await fetch(`/api/card/comment`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    content: commentText,
+                    card_id: cardId  // 카드 ID를 입력하세요
+                })
+            });
+
+            if (!response.ok) {
+                alert('Failed to add comment.');
+                return;
+            }
+
+            // // 댓글 목록 갱신
+            // await fetchAndDisplayComments();
+            //
+            // // 입력 폼 비우기
+            // commentInput.value = '';
+        } catch (error) {
+            console.error('Error adding comment:', error);
+        }
+    }
+
+    // //댓글 조회
+    // const cardId = getCardIdFromURL();  // cardId를 가져옴
+    // fetchAndDisplayComments(cardId);  // cardId를 인자로 전달하여 함수 호출
+    //
+    // async function fetchAndDisplayComments() {
+    //     try {
+    //         const response = await fetch(`/borads/api/${boardId}/card/${cardId}/comment`);
+    //
+    //         if (!response.ok) {
+    //             console.error('Failed to fetch comments.');
+    //             return;
+    //         }
+    //
+    //         const comments = await response.json();
+    //         const commentList = document.querySelector('.comment-list');
+    //         commentList.innerHTML = '';  // 댓글 목록 초기화
+    //
+    //         // 서버에서 받은 댓글 목록을 화면에 추가
+    //         comments.forEach(comment => {
+    //             const commentElement = document.createElement('div');
+    //             commentElement.className = 'comment';
+    //             commentElement.textContent = comment.content;
+    //             commentList.appendChild(commentElement);
+    //         });
+    //     } catch (error) {
+    //         console.error('Error fetching comments:', error);
+    //     }
+    // }
+    //
+    // // 페이지 로드 시 댓글 목록을 초기화
+    // fetchAndDisplayComments();
 </script>
 </body>
 </html>
