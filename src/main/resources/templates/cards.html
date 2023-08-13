@@ -81,11 +81,67 @@
         <button class="edit-button">Edit</button>
         <button class="delete-button">Delete</button>
     </div>
+
 </div>
 
 
 <script>
-    function addComment() {
+
+    // 현재 페이지의 URL을 가져옵니다.
+    const currentUrl = window.location.href;
+
+    // URL의 끝부분에 있는 숫자를 추출하여 카드 ID로 사용합니다.
+    const cardId = extractCardIdFromUrl(currentUrl);
+
+
+    // 카드 삭제 버튼 클릭 시
+    const deleteButton = document.querySelector('.delete-button');
+    deleteButton.addEventListener('click', async () => {
+        const confirmDelete = confirm('이 카드를 삭제하시겠습니까?');
+        if (confirmDelete) {
+            try {
+                // 서버로 카드 삭제 요청을 보냅니다.
+                await deleteCardFromServer(cardId);
+
+                // 화면에서 카드를 삭제합니다.
+                const cardElement = document.querySelector('.card');
+                cardElement.remove();
+                window.location.href = originalBoardPageUrl;
+            } catch (error) {
+                console.error('카드 삭제 중 오류 발생:', error);
+                alert('카드 삭제 중 오류가 발생했습니다.');
+            }
+        }
+    });
+
+    // URL에서 카드 ID를 추출하는 함수
+    function extractCardIdFromUrl(url) {
+        const parts = url.split('/');
+        const cardId = parts[parts.length - 1];
+        return cardId;
+    }
+
+    async function deleteCardFromServer(cardId) {
+        try {
+            const response = await fetch(`/api/card/${cardId}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                const responseData = await response.json();
+                console.log('카드 삭제 성공:', responseData.message);
+            } else {
+                throw new Error('카드 삭제 실패');
+            }
+        } catch (error) {
+            console.error('카드 삭제 오류:', error);
+            // throw error;
+        }
+    }
+
+
+
+        function addComment() {
     const commentInput = document.getElementById('comment-input');
     const commentText = commentInput.value.trim();
 
