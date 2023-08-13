@@ -64,7 +64,7 @@ public class ViewController {
         return "cards";
     }
   
-      @GetMapping("/home/createcard")
+      @GetMapping("/createcard")
     public String createCardPage() {
         return "createcard";
     }

@@ -206,14 +206,60 @@
     const popupWindow = window.open(`/manage/${boardId}`, 'Manage Members', 'width=600,height=400');
   }
 
+  function addTask(columnId) {
+    const popupWindow = window.open(`/createcard?columnId=${columnId}`, 'Create Card', 'width=600,height=400');
 
-  function addTask(button) {
-    const list = button.parentNode;
-    const newTask = document.createElement('div');
-    newTask.className = 'card';
-    newTask.textContent = 'New Task';
-    list.insertBefore(newTask, button);
+    const newCard = popupWindow.document.createElement('div');
+    newCard.className = 'card';
+
+    const cardTitleInput = popupWindow.document.createElement('input');
+    cardTitleInput.type = 'text';
+    cardTitleInput.placeholder = 'Enter card title';
+    newCard.appendChild(cardTitleInput);
+
+    const addTaskBtn = popupWindow.document.createElement('button');
+    addTaskBtn.className = 'add-task-btn';
+    addTaskBtn.textContent = 'Add Card';
+    addTaskBtn.onclick = function () {
+      const title = cardTitleInput.value;
+      if (title) {
+        createCard(columnId, title);
+        popupWindow.close();
+      } else {
+        alert('Please enter a card title.');
+      }
+    };
+
+    popupWindow.document.body.appendChild(newCard);
+    popupWindow.document.body.appendChild(addTaskBtn);
   }
+
+  async function createCard(columnId, title) {
+    const requestData = {
+      title: title
+    };
+
+    try {
+      const response = await fetch(`/api/${columnId}/card`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData)
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log('Card created:', responseData);
+        // Refresh the column or update UI as needed
+      } else {
+        console.error('Error creating card');
+      }
+    } catch (error) {
+      console.error('Error creating card:', error);
+    }
+  }
+
 
   // ============ 모든 칼럼 및 카드 조회 ===============
   let board_id = [[${board.id}]];
@@ -262,7 +308,7 @@
                 }
 
                 let temp_html3 = `</div>
-                                              <div class="add-task-btn" onclick="addTask(this)">+</div>
+                                              <div class="add-task-btn" onclick="addTask(${columnsId})">+</div>
                                             </div>
                                           </div>`
 
@@ -313,7 +359,10 @@
     }).done(function(res){
       console.log(res)
       console.log(res.status)
-      window.location.reload()
+      // 컬럼이 성공적으로 생성되면 컬럼 아이디를 가져와서 저장합니다.
+      const columnId = res.columnId; // 여기에서 columnId를 가져옵니다.
+
+      window.location.reload();
     }).fail(function (request, status, error){
       console.log(status)
       console.log(error)
