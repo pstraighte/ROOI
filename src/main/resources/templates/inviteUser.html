@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invite User</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f7f7f7;
+        }
+        .container {
+            text-align: center;
+            padding: 30px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .container h1 {
+            margin-bottom: 10px;
+        }
+        .input-box {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        .invite-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .invite-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Invite User</h1>
+    <input type="text" id="inviteUser" class="input-box" placeholder="Username"> <!-- 수정된 부분: id 속성이 "inviteUser"인 input 요소 -->
+    <!-- boardId를 data 속성으로 추가하고, inviteUser 함수 호출 시 파라미터로 넘겨줍니다. -->
+    <button id="inviteButton" class="invite-button" data-board_id="" onClick="inviteUser()">Invite</button>
+</div>
+<script>
+    function inviteUser() {
+        const inviteUser = $("#inviteUser").val();
+        const pathParts = window.location.pathname.split('/'); // 현재 URL의 경로를 나눕니다.
+        const boardIdFromURL = pathParts[pathParts.indexOf('invite') + 1]; // invite 뒤의 숫자를 가져옵니다.
+
+
+        $.ajax({
+            type: "POST",
+            url: '/api/boards/' + boardIdFromURL + '/invite',
+            data: JSON.stringify({inviteUser: inviteUser}),
+            contentType: "application/json; charset=urf-8",
+            dataType: "json"
+        }).done(function (res) {
+            console.log(res)
+            console.log(res.statusCode)
+            if (res.statusCode === 200) {
+                alert("User invited successfully!");
+                window.close();
+            } else {
+                alert("Failed to invite user.");
+            }
+        }).fail(function (request, status, error) {
+            console.log(status)
+            console.log(error)
+            alert("에러가 발생했습니다.");
+        });
+    }
+
+
+</script>
+</body>
+</html>
