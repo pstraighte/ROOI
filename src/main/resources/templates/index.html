@@ -322,8 +322,9 @@
                 for (let j = cardList.length - 1; j >= 0; j--) {
                   let cardTitle = cardList[j].title;
                   let cardId = cardList[j].id;
+                  let cardColor = cardList[j].color;
 
-                  let temp_html2 = `<div class="card" onclick="cardDetail(${cardId}, ${columnsId})" draggable="true" ondragstart="drag(event)">${cardTitle}</div>`
+                  let temp_html2 = `<div class="card" style="background-color: ${cardColor}" onclick="cardDetail(${cardId}, ${columnsId})" draggable="true" ondragstart="drag(event)">${cardTitle}</div>`
 
                   cardList_html += temp_html2;
                 }
