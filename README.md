@@ -14,7 +14,7 @@
 
 
   3.ERD
-  https://miro.com/app/board/uXjVMwJrBRA=/
+  https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F52bf1a9a-9c77-4c51-af5d-b2e65ee043bb%2FE.png?table=block&id=d3086824-94d4-4c4c-92d5-741d1485aa20&spaceId=83c75a39-3aba-4ba4-a792-7aefe4b07895&width=2000&userId=879ce36c-ae3b-491b-91d9-e368c121fcf7&cache=v2
 
 
 
