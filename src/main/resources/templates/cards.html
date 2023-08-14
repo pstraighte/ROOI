@@ -103,7 +103,7 @@
             <ul th:each="worker : ${card.workerList}" style="border-bottom: solid 1px gray; padding-bottom: 15px">
                 <span class="worker-text" th:text="${worker.worker}"></span>
 
-                <button type="submit" class="delete-button" onclick="deleteWorker()" style="font-size: 12px; float: right">삭 제</button>
+                <button type="submit" id="worker-delete-button" style="font-size: 12px; float: right">삭 제</button>
             </ul>
         </div>
     </div>
@@ -263,7 +263,7 @@
     //     const workerText = button.parentElement.querySelector('.worker-text').textContent;
     // }
 
-    const deleteButtons = document.querySelectorAll('.delete-button');
+    const deleteButtons = document.querySelectorAll('#worker-delete-button');
 
     deleteButtons.forEach(button => {
         button.addEventListener('click', () => {
