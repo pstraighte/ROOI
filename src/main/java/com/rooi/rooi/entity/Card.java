@@ -63,6 +63,8 @@ public class Card {
     public void update(CardRequestDto cardRequestDto) {
         this.title = cardRequestDto.getTitle();
         this.description = cardRequestDto.getDescription();
+        this.deadLine = cardRequestDto.getDeadLine();
+        this.color = cardRequestDto.getColor();
     }
 
     public void setTitle(String title) {
