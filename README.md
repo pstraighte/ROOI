@@ -1,3 +1,6 @@
+![보드](https://github.com/Sehun2304/ROOI/assets/131871197/38f36b99-b53f-43aa-8e8a-ef98e86c9495)
+
+
 ![E](https://github.com/Sehun2304/ROOI/assets/131871197/54bbd2e0-f408-44d7-9d3f-cf365f244531)
 
 - 1.프로젝트 구상
