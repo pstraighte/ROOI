@@ -137,6 +137,7 @@
       .modal-content {
         width: 90%;
       }
+
     }
   </style>
 </head>
@@ -306,7 +307,7 @@
                 let title = data[i].title;
                 let cardList = data[i].cardList;
                 let temp_html1 = `
-                                      <div class="column" style="text-decoration-line: none;">
+                                      <div class="column" style="text-decoration-line: none;" ondrop="drop(event)" ondragover="allowDrop(event)">
                                             <div class="list" id = "columns-list" >
                                                 <div class="list-title">
                                                     <span onclick="openModal2(${columnsId})" onmouseover="this.style.cursor='pointer'">${title}</span>
@@ -322,7 +323,7 @@
                   let cardTitle = cardList[j].title;
                   let cardId = cardList[j].id;
 
-                  let temp_html2 = `<div class="card" onclick="cardDetail(${cardId}, ${columnsId})">${cardTitle}</div>`
+                  let temp_html2 = `<div class="card" onclick="cardDetail(${cardId}, ${columnsId})" draggable="true" ondragstart="drag(event)">${cardTitle}</div>`
 
                   cardList_html += temp_html2;
                 }
@@ -439,7 +440,8 @@
 
   // ============ 카드 상세 페이지 이동 ===============
   function cardDetail(cardId, columnsId) {
-    window.location.href = "/" + columnsId + "/card/" + cardId
+    const popupUrl = "/" + columnsId + "/card/" + cardId;
+    const popupWindow = window.open(popupUrl, 'Card Details', 'width=600,height=400');
   }
 
 
@@ -482,6 +484,45 @@
       console.log(status)
       console.log(error)
       alert("에러가 발생했습니다.");
+    });
+  }
+  // ============ 카드 이동 ===============
+  let draggedCard = null;
+
+  document.addEventListener('dragstart', function(event) {
+    if (event.target.classList.contains('card')) {
+      draggedCard = event.target;
+    }
+  });
+
+  document.addEventListener('dragover', function(event) {
+    event.preventDefault();
+  });
+
+  document.addEventListener('drop', function(event) {
+    event.preventDefault();
+
+    if (event.target.classList.contains('card') && draggedCard) {
+      const cardId = draggedCard.dataset.cardId; // 드래그한 카드의 ID
+      const newColumnId = event.target.closest('.column').dataset.columnId; // 이동할 컬럼의 ID
+      moveCard(cardId, newColumnId);
+      event.target.parentElement.insertBefore(draggedCard, event.target.nextSibling);
+      draggedCard = null;
+    }
+  });
+
+  // 카드 이동을 서버로 전송하는 함수
+  function moveCard(cardId, newColumnId) {
+    $.ajax({
+      type: "PUT",
+      url: `/api/card/move/${cardId}/${newColumnId}`,
+      success: function(response) {
+        console.log("Card moved:", response);
+        // 카드 이동 후 UI 업데이트 작업을 수행합니다.
+      },
+      error: function(error) {
+        console.error("Error moving card:", error);
+      }
     });
   }
 </script>

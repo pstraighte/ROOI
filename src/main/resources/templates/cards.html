@@ -25,10 +25,8 @@
         }
         .edit-button,
         .delete-button {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
+            background-color: #ff0000;
+            color: white;
         }
         .edit-button {
             background-color: #007bff;
@@ -109,6 +107,17 @@
             </ul>
         </div>
     </div>
+    <div class="deadline" style="margin-top: 30px">
+        <div>Deadline</div>
+        <div style="border: solid 1px gray; padding: 10px 10px 10px 10px">
+            <span th:text="${card.deadLine}">2023-08-31</span> <!-- 카드의 deadline 정보를 표시 -->
+        </div>
+    </div>
+    <div class="card-buttons">
+        <button class="edit-button" onclick="showEditBox()">Edit</button>
+        <button class="delete-button" onclick="deleteCard()">Delete</button>
+    </div>
+</div>
 <hr>
     <div class="comments-section">
         <div style="margin-bottom: 10px">Comments</div>
@@ -141,13 +150,6 @@
     </div>
 
 
-<!--        <div class="col-md-12" id="edit-box" style="">-->
-<!--            <div class="comment-board mt-2">-->
-<!--                <textarea class="content form-control col-sm-5" rows="1" id="input-edit-comment"></textarea>-->
-<!--            </div>-->
-<!--            <button type="submit" class="btn btn-dark" id="comment-edit-btn" onclick="" style="width: 55px; font-size: 12px;">확 인</button>-->
-<!--            <button type="submit" class="btn btn-dark" id="comment-edit-cancel-btn" onclick="" style="width: 55px; font-size: 12px;">취 소</button>-->
-<!--        </div>-->
 
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -297,6 +299,61 @@
             });
         });
     });
+
+
+    // 카드 삭제 버튼 클릭 시
+    const deleteButton = document.querySelector('.delete-button');
+    deleteButton.addEventListener('click', async () => {
+        const confirmDelete = confirm('이 카드를 삭제하시겠습니까?');
+        if (confirmDelete) {
+            try {
+                // 서버로 카드 삭제 요청을 보냅니다.
+                const cardId = getCardIdFromURL(); // 카드 ID를 가져옵니다.
+                if (!cardId) {
+                    alert('카드 ID를 가져올 수 없습니다.');
+                    return;
+                }
+
+                await deleteCardFromServer(cardId);
+                window.close();
+                if (window.opener) {
+                    window.opener.location.reload();
+                }
+            } catch (error) {
+
+            }
+        }
+    });
+
+    async function deleteCardFromServer(cardId) {
+        try {
+            const response = await fetch(`/api/card/${cardId}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                const responseData = await response.json();
+                console.log('카드 삭제 성공:', responseData.message);
+            } else {
+                throw new Error('카드 삭제 실패');
+            }
+        } catch (error) {
+            console.error('카드 삭제 오류:', error);
+            // throw error;
+        }
+    }
+
+    function showEditBox() {
+        const cardId = getCardIdFromURL();
+        if (!cardId) {
+            alert('카드 ID를 가져올 수 없습니다.');
+            return;
+        }
+        // const popupWindow = window.open(`/card/${cardId}`, 'Edit Card', 'width=600,height=400');
+
+        window.location.href = `/card/${cardId}`
+    }
+
 
 </script>
 </body>

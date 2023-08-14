@@ -7,14 +7,14 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             background-color: #f0f0f0;
+            margin: 0;
         }
+
         .container {
             text-align: center;
             padding: 70px;
@@ -22,17 +22,11 @@
             border-radius: 10px;
             box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
         }
-        button {
-            display: block;
-            margin: 20px auto;
-        }
 
-        .container input[type="text"] {
+        input, textarea {
             display: block;
-            margin: 20px auto;
+            margin: 10px auto;
             width: 90%;
-            height: auto;
-            line-height : normal;
             padding: .8em .5em;
             font-family: inherit;
             border: 1px solid #999;
@@ -42,6 +36,39 @@
             -moz-appearance: none;
             appearance: none;
         }
+        label{
+            display: block;
+            margin: 10px auto;
+            width: 90%;
+            padding: .8em .5em;
+            font-family: inherit;
+            border: 1px solid #999;
+            border-radius: 0;
+            outline-style: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-color: #f0f0f0; /* 바탕색 회색으로 변경 */
+            color: white;
+
+
+
+        }
+
+        textarea {
+            height: auto;
+            resize: vertical;
+        }
+
+        input[type="color"] {
+            height: 30px;
+            padding: 0;
+        }
+
+        label {
+            color: #888; /* 연한 회색 */
+        }
+
         button {
             background-color: #466481;
             color: #fff;
@@ -49,6 +76,8 @@
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
+            display: block;
+            margin: 20px auto;
         }
     </style>
 </head>
@@ -56,20 +85,20 @@
 <div class="container">
     <h1>Create a New Card</h1>
     <form id="createCardForm">
-        <label for="title">Title:</label>
-        <input type="text" id="title" name="title" required><br>
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" required>
 
-        <label for="description">Description:</label>
-        <textarea id="description" name="description" rows="4" required></textarea><br>
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="4" required></textarea>
 
-        <label for="deadLine">Deadline:</label>
-        <input type="date" id="deadLine" name="deadLine" required><br>
+        <label for="deadLine">Deadline</label>
+        <input type="date" id="deadLine" name="deadLine" required>
 
-        <label for="color">Color:</label>
-        <input type="color" id="color" name="color"><br>
+        <label for="color">Color</label>
+        <input type="color" id="color" name="color">
 
-        <label for="worker">Worker:</label>
-        <input type="text" id="worker" name="worker"><br>
+        <label for="worker">Worker</label>
+        <input type="text" id="worker" name="worker">
 
         <!-- 컬럼 ID를 동적으로 가져와서 설정 -->
         <input type="hidden" id="columnId" value="">
@@ -132,4 +161,3 @@
 </script>
 </body>
 </html>
-
