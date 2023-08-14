@@ -55,6 +55,39 @@
             padding: 3px 10px;
             cursor: pointer;
         }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .close {
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        @media screen and (max-width: 600px) {
+            .modal-content {
+                width: 90%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -64,9 +97,16 @@
         <span th:text="${card.description}">This is a description of the task.</span>
     </div>
     <div class="worker" style="margin-top: 30px">
-        <div>Worker</div>
+        <div style="margin-bottom: 5px">
+            Worker
+            <button type="submit" class="btn btn-dark" onclick="openModal()" style="font-size: 12px; float: right">추 가</button>
+        </div>
         <div style="border: solid 1px gray; padding: 10px 10px 10px 10px" >
-            <span>Worker List</span>
+            <ul th:each="worker : ${card.workerList}" style="border-bottom: solid 1px gray; padding-bottom: 15px">
+                <span class="worker-text" th:text="${worker.worker}"></span>
+
+                <button type="submit" class="delete-button" onclick="deleteWorker()" style="font-size: 12px; float: right">삭 제</button>
+            </ul>
         </div>
     </div>
 <hr>
@@ -86,6 +126,17 @@
             <button onclick="addComment()" style="height: 30px; float: right ">Add Comment</button>
         </div>
 
+
+    </div>
+
+    <div class="modal" id="myModal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <div>
+                <input type="text" id ="input-worker" placeholder="추가할 작업자 ID를 입력하세요." style="width: 300px; height: 30px">
+                <button class="btn btn-dark" id="btn-login" style="margin-left: 10px" onclick="addWorker()"><strong>추가</strong></button>
+            </div>
+        </div>
 
     </div>
 
@@ -158,6 +209,94 @@
         window.location.reload()
     }
 
+    // 작업자 추가
+    function openModal() {
+        const modal = document.getElementById("myModal");
+        modal.style.display = "block";
+    }
+
+    function closeModal() {
+        const modal = document.getElementById("myModal");
+        modal.style.display = "none";
+    }
+
+    const closeModalButton = document.getElementById("closeModal");
+    closeModalButton.addEventListener("click", closeModal);
+
+    function addWorker() {
+        const cardId = getCardIdFromURL();
+
+        if (!cardId) {
+            alert('카드 ID를 가져올 수 없습니다.');
+            return;
+        }
+
+        let data = {
+            worker : $('#input-worker').val()
+        }
+
+        $.ajax({
+            type: "POST",
+            url:'/api/card/'+cardId+'/worker',
+            data : JSON.stringify(data),
+            contentType:"application/json; charset=urf-8",
+            dataType:"json"
+        }).done(function(res){
+            console.log(res)
+            console.log(res.status)
+            if (res.statusCode === 200) {
+                alert(res.message)
+                window.location.reload()
+            } else if (res.statusCode === 400) {
+                alert(res.message)
+            }
+        }).fail(function (request, error){
+            console.log(error)
+            alert("에러가 발생했습니다.");
+        });
+    }
+
+    // 작업자 삭제
+    // function deleteWorker() {
+    //     const workerText = button.parentElement.querySelector('.worker-text').textContent;
+    // }
+
+    const deleteButtons = document.querySelectorAll('.delete-button');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const cardId = getCardIdFromURL();
+
+            if (!cardId) {
+                alert('카드 ID를 가져올 수 없습니다.');
+                return;
+            }
+            const workerText = button.parentElement.querySelector('.worker-text').textContent;
+
+            let data = {
+                worker : workerText
+            }
+            $.ajax({
+                type: "DELETE",
+                url:'/api/card/'+cardId+'/worker',
+                data : JSON.stringify(data),
+                contentType:"application/json; charset=urf-8",
+                dataType:"json"
+            }).done(function(res){
+                console.log(res)
+                console.log(res.status)
+                if (res.statusCode === 200) {
+                    alert(res.message)
+                    window.location.reload()
+                } else if (res.statusCode === 400) {
+                    alert(res.message)
+                }
+            }).fail(function (request, error){
+                console.log(error)
+                alert("에러가 발생했습니다.");
+            });
+        });
+    });
 
 </script>
 </body>

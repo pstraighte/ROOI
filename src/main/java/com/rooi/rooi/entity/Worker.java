@@ -12,6 +12,9 @@ public class Worker {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String worker;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "card_id")
     private Card card;
@@ -23,5 +26,6 @@ public class Worker {
     public Worker(Card card, User newWorker) {
         this.card = card;
         this.user = newWorker;
+        this.worker = newWorker.getUsername();
     }
 }
