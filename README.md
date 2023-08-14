@@ -1,4 +1,4 @@
-![image](https://github.com/Sehun2304/ROOI/assets/131871197/c4dc89d9-c390-4d67-ac10-757501c95475)# ROOI
+
 
 - 1.프로젝트 구상
     1. **프로젝트명 :  ROOI (running out of ideas)**
