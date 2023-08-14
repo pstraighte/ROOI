@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Card</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f0f0f0;
+      margin: 0;
+    }
+
+    .container {
+      text-align: center;
+      padding: 70px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    input, textarea {
+      display: block;
+      margin: 10px auto;
+      width: 90%;
+      padding: .8em .5em;
+      font-family: inherit;
+      border: 1px solid #999;
+      border-radius: 0;
+      outline-style: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+    label{
+      display: block;
+      margin: 10px auto;
+      width: 90%;
+      padding: .8em .5em;
+      font-family: inherit;
+      border: 1px solid #999;
+      border-radius: 0;
+      outline-style: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-color: #f0f0f0; /* 바탕색 회색으로 변경 */
+      color: white;
+    }
+
+    textarea {
+      height: auto;
+      resize: vertical;
+    }
+
+    input[type="color"] {
+      height: 30px;
+      padding: 0;
+    }
+
+    label {
+      color: #888; /* 연한 회색 */
+    }
+
+    button {
+      background-color: #466481;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: block;
+      margin: 20px auto;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Edit Card</h1>
+  <form id="editCardForm">
+    <label for="title">Title</label>
+    <input type="text" id="title" name="title" required>
+
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="4" required></textarea>
+
+    <label for="deadLine">Deadline</label>
+    <input type="date" id="deadLine" name="deadLine" required>
+
+    <label for="color">Color</label>
+    <input type="color" id="color" name="color">
+
+    <button type="submit">Save Changes</button>
+  </form>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const editCardForm = document.getElementById('editCardForm');
+
+    const pathParts = window.location.pathname.split('/');
+    const cardId = pathParts[pathParts.indexOf('card') + 1];
+
+    if (!cardId) {
+      console.error('카드 ID를 가져올 수 없습니다.');
+      return;
+    }
+
+    // 이전에 작성한 카드 정보를 불러와서 폼에 채워줍니다.
+    fetch(`/api/card/${cardId}`)
+            .then(response => response.json())
+            .then(card => {
+              document.getElementById('title').value = card.title;
+              document.getElementById('description').value = card.description;
+              document.getElementById('deadLine').value = card.deadLine;
+              document.getElementById('color').value = card.color;
+            });
+
+    editCardForm.addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+      const title = document.getElementById('title').value;
+      const description = document.getElementById('description').value;
+      const deadLine = document.getElementById('deadLine').value;
+      const color = document.getElementById('color').value;
+
+      const requestData = {
+        title: title,
+        description: description,
+        deadLine: deadLine,
+        color: color
+      };
+
+      try {
+        const response = await fetch(`/api/card/${cardId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestData)
+        });
+
+        if (response.ok) {
+          const responseData = await response.json();
+          console.log('Card updated:', responseData);
+          alert('카드가 업데이트되었습니다.');
+          window.close();
+          window.opener.location.reload();
+        } else {
+          console.error('Error updating card');
+        }
+      } catch (error) {
+        console.error('Error updating card:', error);
+      }
+    });
+  });
+</script>
+</body>
+</html>

@@ -25,10 +25,8 @@
         }
         .edit-button,
         .delete-button {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
+            background-color: #ff0000;
+            color: white;
         }
         .edit-button {
             background-color: #007bff;
@@ -55,47 +53,382 @@
             padding: 3px 10px;
             cursor: pointer;
         }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .close {
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        @media screen and (max-width: 600px) {
+            .modal-content {
+                width: 90%;
+            }
+        }
     </style>
 </head>
 <body>
 <div class="card">
-    <div class="card-title">Task 1</div>
-    <div class="card-content">
-        This is a description of the task.
+    <div class="card-title"><span th:text="${card.title}">Task 1</span></div>
+    <div class="card-content" style="margin-top: 30px">
+        <span th:text="${card.description}">This is a description of the task.</span>
     </div>
-<hr>
-    <div class="comments-section">
-        <input type="text" id="comment-input" placeholder="Enter your comment">
-        <button onclick="addComment()">Add Comment</button>
-        <div class="comment-list"></div>
+    <div class="worker" style="margin-top: 30px">
+        <div style="margin-bottom: 5px">
+            Worker
+            <button type="submit" class="btn btn-dark" onclick="openModal()" style="font-size: 12px; float: right">추 가</button>
+        </div>
+        <div style="border: solid 1px gray; padding: 10px 10px 10px 10px" >
+            <ul th:each="worker : ${card.workerList}" style="border-bottom: solid 1px gray; padding-bottom: 15px">
+                <span class="worker-text" th:text="${worker.worker}"></span>
+
+                <button type="submit" id="worker-delete-button" style="font-size: 12px; float: right">삭 제</button>
+            </ul>
+        </div>
+    </div>
+    <div class="deadline" style="margin-top: 30px">
+        <div>Deadline</div>
+        <div style="border: solid 1px gray; padding: 10px 10px 10px 10px">
+            <span th:text="${card.deadLine}">2023-08-31</span> <!-- 카드의 deadline 정보를 표시 -->
+        </div>
     </div>
     <div class="card-buttons">
-        <button class="edit-button">Edit</button>
-        <button class="delete-button">Delete</button>
+        <button class="edit-button" onclick="showEditBox()">Edit</button>
+        <button class="delete-button" onclick="deleteCard()">Delete</button>
     </div>
 </div>
+<hr>
+    <div class="comments-section">
+        <div style="margin-bottom: 10px">Comments</div>
+        <div class="comment-list" style="margin-bottom: 10px">
+            <ul th:each="comment : ${card.commentList}" style="border-bottom: solid 1px gray; padding-bottom: 15px">
+                <span th:text="${comment.username}"></span> : <span th:text="${comment.content}"></span>
+                <div style="float: right">
+                    <button type="submit" class="comment-update-btn" id="comment-update-btn"
+                        th:attr="data-comment-id=${comment.id}" onclick="editComment(this.getAttribute('data-comment-id'))" style="width: 55px; font-size: 12px">수 정</button>
+                    <button type="submit" class="comment-delete-btn" id="comment-delete-btn" th:attr="data-comment-id=${comment.id}" style="width: 55px; font-size: 12px">삭 제</button>
+                </div>
+
+                <div th:id="'edit-box-' + ${comment.id}" style="margin-top: 20px; border-top: solid 1px gray; padding-top: 10px; display: none">
+                    <input class="content form-control col-sm-5" th:id="'input-edit-comment-' + ${comment.id}" style="width: 70%; height: 25px">
+                    <div style="float: right">
+                        <button type="submit" class="btn btn-dark" id="comment-edit-btn" th:attr="data-comment-id=${comment.id}" onclick="editCommentConfirm(this.getAttribute('data-comment-id'))" style="width: 55px; font-size: 12px;">확 인</button>
+                        <button type="submit" class="btn btn-dark" id="comment-edit-cancel-btn" th:attr="data-comment-id=${comment.id}" onclick="editComment(this.getAttribute('data-comment-id'))" style="width: 55px; font-size: 12px;">취 소</button>
+                    </div>
+                </div>
+            </ul>
+        <div>
+            <input type="text" id="comment-input" placeholder="Enter your comment" style="width: 70%; height: 30px">
+            <button onclick="addComment()" style="height: 30px; float: right ">Add Comment</button>
+        </div>
+    </div>
+
+    <div class="modal" id="myModal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <div>
+                <input type="text" id ="input-worker" placeholder="추가할 작업자 ID를 입력하세요." style="width: 300px; height: 30px">
+                <button class="btn btn-dark" id="btn-login" style="margin-left: 10px" onclick="addWorker()"><strong>추가</strong></button>
+            </div>
+        </div>
+
+    </div>
 
 
+
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    function addComment() {
-    const commentInput = document.getElementById('comment-input');
-    const commentText = commentInput.value.trim();
+    const currentURL = window.location.href;
 
-    if (!commentText) {
-        alert('Please enter a comment.');
-        return;
+    function getCardIdFromURL() {
+        const cardIdPattern = /\/card\/(\d+)/; // URL에서 숫자로 된 카드 ID를 추출하는 정규식
+        const match = currentURL.match(cardIdPattern);
+
+        if (match && match.length > 1) {
+            return match[1]; // 첫 번째 캡처 그룹이 카드 ID입니다.
+        } else {
+            return null; // 카드 ID를 추출할 수 없는 경우
+        }
     }
 
-    const commentList = document.querySelector('.comment-list');
-    const newComment = document.createElement('div');
-    newComment.className = 'comment';
-    newComment.textContent = commentText;
+    async function addComment() {
+        const commentInput = document.getElementById('comment-input');
+        const commentText = commentInput.value.trim();
+        const cardId = getCardIdFromURL();
 
-    commentList.appendChild(newComment);
+        if (!cardId) {
+            alert('카드 ID를 가져올 수 없습니다.');
+            return;
+        }
 
-    // 입력 폼 비우기
-    commentInput.value = '';
-}
+        if (!commentText) {
+            alert('Please enter a comment.');
+            return;
+        }
+
+        // AJAX를 사용하여 댓글을 서버에 전송하고 저장
+        try {
+            const response = await fetch(`/api/card/comment`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    content: commentText,
+                    card_id: cardId  // 카드 ID를 입력하세요
+                })
+            });
+
+            if (!response.ok) {
+                alert('Failed to add comment.');
+                return;
+            }
+
+            // // 댓글 목록 갱신
+            // await fetchAndDisplayComments();
+
+            // 입력 폼 비우기
+            commentInput.value = '';
+        } catch (error) {
+            console.error('Error adding comment:', error);
+        }
+        window.location.reload()
+    }
+
+    // 작업자 추가
+    function openModal() {
+        const modal = document.getElementById("myModal");
+        modal.style.display = "block";
+    }
+
+    function closeModal() {
+        const modal = document.getElementById("myModal");
+        modal.style.display = "none";
+    }
+
+    const closeModalButton = document.getElementById("closeModal");
+    closeModalButton.addEventListener("click", closeModal);
+
+    function addWorker() {
+        const cardId = getCardIdFromURL();
+
+        if (!cardId) {
+            alert('카드 ID를 가져올 수 없습니다.');
+            return;
+        }
+
+        let data = {
+            worker : $('#input-worker').val()
+        }
+
+        $.ajax({
+            type: "POST",
+            url:'/api/card/'+cardId+'/worker',
+            data : JSON.stringify(data),
+            contentType:"application/json; charset=urf-8",
+            dataType:"json"
+        }).done(function(res){
+            console.log(res)
+            console.log(res.status)
+            if (res.statusCode === 200) {
+                alert(res.message)
+                window.location.reload()
+            } else if (res.statusCode === 400) {
+                alert(res.message)
+            }
+        }).fail(function (request, error){
+            console.log(error)
+            alert("에러가 발생했습니다.");
+        });
+    }
+
+    const deleteButtons = document.querySelectorAll('#worker-delete-button');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const cardId = getCardIdFromURL();
+
+            if (!cardId) {
+                alert('카드 ID를 가져올 수 없습니다.');
+                return;
+            }
+            const workerText = button.parentElement.querySelector('.worker-text').textContent;
+
+            let data = {
+                worker : workerText
+            }
+            $.ajax({
+                type: "DELETE",
+                url:'/api/card/'+cardId+'/worker',
+                data : JSON.stringify(data),
+                contentType:"application/json; charset=urf-8",
+                dataType:"json"
+            }).done(function(res){
+                console.log(res)
+                console.log(res.status)
+                if (res.statusCode === 200) {
+                    alert(res.message)
+                    window.location.reload()
+                } else if (res.statusCode === 400) {
+                    alert(res.message)
+                }
+            }).fail(function (request, error){
+                console.log(error)
+                alert("에러가 발생했습니다.");
+            });
+        });
+    });
+
+
+    // 카드 삭제 버튼 클릭 시
+    const deleteButton = document.querySelector('.delete-button');
+    deleteButton.addEventListener('click', async () => {
+        const confirmDelete = confirm('이 카드를 삭제하시겠습니까?');
+        if (confirmDelete) {
+            try {
+                // 서버로 카드 삭제 요청을 보냅니다.
+                const cardId = getCardIdFromURL(); // 카드 ID를 가져옵니다.
+                if (!cardId) {
+                    alert('카드 ID를 가져올 수 없습니다.');
+                    return;
+                }
+
+                await deleteCardFromServer(cardId);
+                window.close();
+                if (window.opener) {
+                    window.opener.location.reload();
+                }
+            } catch (error) {
+
+            }
+        }
+    });
+
+    async function deleteCardFromServer(cardId) {
+        try {
+            const response = await fetch(`/api/card/${cardId}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                const responseData = await response.json();
+                console.log('카드 삭제 성공:', responseData.message);
+            } else {
+                throw new Error('카드 삭제 실패');
+            }
+        } catch (error) {
+            console.error('카드 삭제 오류:', error);
+            // throw error;
+        }
+    }
+
+    function showEditBox() {
+        const cardId = getCardIdFromURL();
+        if (!cardId) {
+            alert('카드 ID를 가져올 수 없습니다.');
+            return;
+        }
+        // const popupWindow = window.open(`/card/${cardId}`, 'Edit Card', 'width=600,height=400');
+
+        window.location.href = `/card/${cardId}`
+    }
+
+    // 댓글 삭제
+    document.addEventListener('DOMContentLoaded', () => {
+        const deleteButtons = document.querySelectorAll('.comment-delete-btn');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const commentId = button.getAttribute('data-comment-id');
+                // deleteComment(commentId);
+                console.log(commentId)
+                const confirmDelete = confirm('이 댓글을 삭제하시겠습니까?');
+                if (confirmDelete) {
+                    $.ajax({
+                        type: "DELETE",
+                        url:'/api/card/comment/'+commentId,
+                        dataType:"json"
+                    }).done(function(res){
+                        console.log(res)
+                        console.log(res.status)
+                        if (res.statusCode === 200) {
+                            alert(res.message)
+                            window.location.reload();
+                        } else if (res.statusCode === 400) {
+                            alert(res.message)
+                        }
+                    }).fail(function (request, status, error){
+                        console.log(status)
+                        console.log(error)
+                        alert("에러가 발생했습니다.");
+                    });
+                }
+            });
+        });
+    });
+
+
+    // 댓글 수정
+    function editComment(commentId) {
+        if (document.getElementById('edit-box-'+ commentId).style.display === 'none') {
+            document.getElementById('edit-box-'+ commentId).style.display = 'block'
+        } else if (document.getElementById('edit-box-'+ commentId).style.display === 'block') {
+            document.getElementById('edit-box-'+ commentId).style.display = 'none'
+        }
+    }
+
+    function editCommentConfirm(comment_id) {
+        const commentId = comment_id;
+        // deleteComment(commentId);
+        console.log(commentId)
+        let data = {
+            card_id: getCardIdFromURL(),
+            content: document.getElementById('input-edit-comment-'+comment_id).value
+        };
+        console.log(data.content)
+
+        $.ajax({
+            type: "PUT",
+            url:'/api/card/comment/'+commentId,
+            data : JSON.stringify(data),
+            contentType:"application/json; charset=urf-8",
+            dataType:"json"
+        }).done(function(res){
+            console.log(res)
+            console.log(res.status)
+            if (res.statusCode === 200) {
+                alert(res.message)
+                window.location.reload();
+            } else if (res.statusCode === 400) {
+                alert(res.message)
+            }
+        }).fail(function (request, status, error){
+            console.log(status)
+            console.log(error)
+            alert("에러가 발생했습니다.");
+        });
+    }
 </script>
 </body>
 </html>

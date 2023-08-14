@@ -2,10 +2,14 @@ package com.rooi.rooi.dto;
 
 import com.rooi.rooi.entity.Card;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
+@NoArgsConstructor
 public class CardResponseDto {
     private Long id;
     private String title;
@@ -13,7 +17,8 @@ public class CardResponseDto {
     private Long columnId;
     private LocalDate deadLine;
     private String color;
-//    private String worker;
+    private List<WorkerResponseDto> workerList;
+    private List<CommentResponseDto> commentList;
 
     public CardResponseDto(Card card) {
         this.id = card.getId();
@@ -22,6 +27,7 @@ public class CardResponseDto {
         this.columnId = card.getColumns().getId();
         this.deadLine = card.getDeadLine();
         this.color = card.getColor();
-//        this.worker=card.getWorkers();
+        this.workerList = card.getWorkers().stream().map(WorkerResponseDto::new).collect(Collectors.toList());
+        this.commentList = card.getCommentList().stream().map(CommentResponseDto::new).collect(Collectors.toList());
     }
 }

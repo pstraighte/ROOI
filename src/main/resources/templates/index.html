@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/draggable@1.0.0-beta.6/dist/draggable.bundle.css">
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/draggable@1.0.0-beta.6/dist/draggable.bundle.js"></script>
   <title>Trello Board</title>
   <style>
     body {
@@ -12,6 +15,16 @@
       padding: 0;
       display: flex;
     }
+    .sortable-placeholder {
+      background-color: rgba(0, 0, 0, 0.1);
+      border: 2px dashed #aaa;
+      height: 100px;
+      width: 100%;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     .sidebar {
       width: 250px;
       background-color: #333;
@@ -124,6 +137,7 @@
       .modal-content {
         width: 90%;
       }
+
     }
   </style>
 </head>
@@ -132,7 +146,7 @@
     <h1><span th:text="${board.title}">Trello Board</span></h1>
     <div class="topbar-buttons">
       <a href = "/">
-        <button >home</button>
+        <button style="width: 75px; height: 25px">home</button>
       </a>
       <button onclick="updateBoard()">보드 수정</button>
       <button onclick="deleteBoard()" id="profile-btn">보드 삭제</button>
@@ -176,8 +190,19 @@
         </div>
      <a href="/home/createcard"> <div class="add-task-btn" >+</div></a>
 <!--         craretecar페이지 링크 추가 -->
-      </div>  
+      </div>
     </div>
+  </div>
+
+  <div class="modal" id="myModal2">
+      <div class="modal-content">
+          <span class="close" id="closeModal2">&times;</span>
+          <div>
+              <input type="text" class="form-control" id="inputColumnName2" placeholder="Column Name" style="width: 300px; height: 30px">
+              <button class="btn btn-dark" id="btn-login2" style="margin-left: 10px" onclick="updateColumn()"><strong>수정</strong></button>
+          </div>
+      </div>
+
   </div>
 
 <!--상단바-->
@@ -206,14 +231,60 @@
     const popupWindow = window.open(`/manage/${boardId}`, 'Manage Members', 'width=600,height=400');
   }
 
+  function addTask(columnId) {
+    const popupWindow = window.open(`/createcard?columnId=${columnId}`, 'Create Card', 'width=600,height=400');
 
-  function addTask(button) {
-    const list = button.parentNode;
-    const newTask = document.createElement('div');
-    newTask.className = 'card';
-    newTask.textContent = 'New Task';
-    list.insertBefore(newTask, button);
+    const newCard = popupWindow.document.createElement('div');
+    newCard.className = 'card';
+
+    const cardTitleInput = popupWindow.document.createElement('input');
+    cardTitleInput.type = 'text';
+    cardTitleInput.placeholder = 'Enter card title';
+    newCard.appendChild(cardTitleInput);
+
+    const addTaskBtn = popupWindow.document.createElement('button');
+    addTaskBtn.className = 'add-task-btn';
+    addTaskBtn.textContent = 'Add Card';
+    addTaskBtn.onclick = function () {
+      const title = cardTitleInput.value;
+      if (title) {
+        createCard(columnId, title);
+        popupWindow.close();
+      } else {
+        alert('Please enter a card title.');
+      }
+    };
+
+    popupWindow.document.body.appendChild(newCard);
+    popupWindow.document.body.appendChild(addTaskBtn);
   }
+
+  async function createCard(columnId, title) {
+    const requestData = {
+      title: title
+    };
+
+    try {
+      const response = await fetch(`/api/${columnId}/card`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData)
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log('Card created:', responseData);
+        // Refresh the column or update UI as needed
+      } else {
+        console.error('Error creating card');
+      }
+    } catch (error) {
+      console.error('Error creating card:', error);
+    }
+  }
+
 
   // ============ 모든 칼럼 및 카드 조회 ===============
   let board_id = [[${board.id}]];
@@ -236,12 +307,10 @@
                 let title = data[i].title;
                 let cardList = data[i].cardList;
                 let temp_html1 = `
-                                      <div class="column" style="text-decoration-line: none;">
+                                      <div class="column" style="text-decoration-line: none;" ondrop="drop(event)" ondragover="allowDrop(event)">
                                             <div class="list" id = "columns-list" >
                                                 <div class="list-title">
-                                                  <a href = api/columns/${columnsId} class= "col-3">
-                                                    <span>${title}</span>
-                                                  </a>
+                                                    <span onclick="openModal2(${columnsId})" onmouseover="this.style.cursor='pointer'">${title}</span>
                                                   <div class="delete-board-btn" onclick="deleteColumns(${columnsId})">x</div>
                                                 </div>
 
@@ -253,16 +322,15 @@
                 for (let j = cardList.length - 1; j >= 0; j--) {
                   let cardTitle = cardList[j].title;
                   let cardId = cardList[j].id;
+                  let cardColor = cardList[j].color;
 
-                  let temp_html2 = `<a href = api/${columnsId}/card/${cardId} class= "col-3" style="text-decoration-line: none;">
-                                  <div class="card">${cardTitle}</div>
-                                </a>`
+                  let temp_html2 = `<div class="card" style="background-color: ${cardColor}" onclick="cardDetail(${cardId}, ${columnsId})" draggable="true" ondragstart="drag(event)">${cardTitle}</div>`
 
                   cardList_html += temp_html2;
                 }
 
                 let temp_html3 = `</div>
-                                              <div class="add-task-btn" onclick="addTask(this)">+</div>
+                                              <div class="add-task-btn" onclick="addTask(${columnsId})">+</div>
                                             </div>
                                           </div>`
 
@@ -313,6 +381,9 @@
     }).done(function(res){
       console.log(res)
       console.log(res.status)
+      // 컬럼이 성공적으로 생성되면 컬럼 아이디를 가져와서 저장합니다.
+      const columnId = res.columnId; // 여기에서 columnId를 가져옵니다.
+
       window.location.reload()
     }).fail(function (request, status, error){
       console.log(status)
@@ -321,32 +392,140 @@
     });
   }
 
+  function deleteColumns(column_id) {
+    let column_url = '/api/columns/delete/' + column_id;
+    console.log(column_url)
+    $.ajax({
+      type: "DELETE",
+      url: column_url,
+      dataType:"json"
+    }).done(function(res){
+      console.log(res)
+      console.log(res.status)
+      if (res.statusCode === 200) {
+        alert("컬럼을 삭제했습니다.")
+        window.location.reload()
+      } else if (res.statusCode === 400) {
+        alert("컬럼 삭제에 실패했습니다")
+      }
+    }).fail(function (request, status, error){
+      console.log(status)
+      console.log(error)
+      alert("에러가 발생했습니다.");
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const columnsContainer = document.querySelector('.column-container');
+
+    $(columnsContainer).sortable({
+      items: '.column',
+      handle: '.list-title',
+      placeholder: 'sortable-placeholder',
+      update: function(event, ui) {
+        const columns = $(columnsContainer).find('.column');
+        const columnOrder = columns.map(function() {
+          return $(this).data('columnId');
+        }).get();
+
+        // 여기서 업데이트된 컬럼 순서를 서버로 전송할 수 있습니다
+        // 예를 들어:
+        // $.post('/api/updateColumnOrder', { order: columnOrder }, function(response) {
+        //   console.log('Column order updated:', response);
+        // });
+
+        console.log('Column order:', columnOrder);
+      }
+    });
+  });
+
+  // ============ 카드 상세 페이지 이동 ===============
+  function cardDetail(cardId, columnsId) {
+    const popupUrl = "/" + columnsId + "/card/" + cardId;
+    const popupWindow = window.open(popupUrl, 'Card Details', 'width=600,height=400');
+  }
 
 
-  // function deleteColumns(column_id) {
-  //     let column_url = '/api/columns/delete/' + column_id;
-  //     console.log(column_url);
-  //
-  //     fetch(column_url, {
-  //         method: "DELETE"
-  //     })
-  //         .then(response => response.json())
-  //         .then(res => {
-  //             console.log(res);
-  //             console.log(res.status);
-  //             if (res.status === 200) {
-  //                 alert("컬럼을 삭제했습니다.");
-  //                 window.location.href = '/boards/' + board_id;
-  //             } else if (res.status === 400) {
-  //                 alert("컬럼 삭제에 실패했습니다.");
-  //             }
-  //         })
-  //         .catch(error => {
-  //             console.error("Error:", error);
-  //             alert("에러가 발생했습니다.");
-  //         });
-  // }
+  // ============ 컬럼 수정 ===============
+  let columnId = null;
+  function openModal2(column_id) {
+    const modal2 = document.getElementById("myModal2");
+    modal2.style.display = "block";
 
+    columnId = column_id;
+  }
+
+  function closeModal2() {
+    const modal2 = document.getElementById("myModal2");
+    modal2.style.display = "none";
+  }
+
+  const closeModalButton2 = document.getElementById("closeModal2");
+  closeModalButton2.addEventListener("click", closeModal2);
+
+
+  function updateColumn() {
+    let data = {
+      boardId : board_id,
+      title : $('#inputColumnName2').val()
+    }
+    console.log(columnId)
+    $.ajax({
+      type: "PUT",
+      url:'/api/columns/'+columnId,
+      data: JSON.stringify(data),
+      contentType:"application/json; charset=urf-8",
+      dataType:"json"
+    }).done(function(res){
+      console.log(res)
+      console.log(res.status)
+
+      window.location.reload()
+    }).fail(function (request, status, error){
+      console.log(status)
+      console.log(error)
+      alert("에러가 발생했습니다.");
+    });
+  }
+  // ============ 카드 이동 ===============
+  let draggedCard = null;
+
+  document.addEventListener('dragstart', function(event) {
+    if (event.target.classList.contains('card')) {
+      draggedCard = event.target;
+    }
+  });
+
+  document.addEventListener('dragover', function(event) {
+    event.preventDefault();
+  });
+
+  document.addEventListener('drop', function(event) {
+    event.preventDefault();
+
+    if (event.target.classList.contains('card') && draggedCard) {
+      const cardId = draggedCard.dataset.cardId; // 드래그한 카드의 ID
+      const newColumnId = event.target.closest('.column').dataset.columnId; // 이동할 컬럼의 ID
+      moveCard(cardId, newColumnId);
+      event.target.parentElement.insertBefore(draggedCard, event.target.nextSibling);
+      draggedCard = null;
+    }
+  });
+
+  // 카드 이동을 서버로 전송하는 함수
+  function moveCard(cardId, newColumnId) {
+    $.ajax({
+      type: "PUT",
+      url: `/api/card/move/${cardId}/${newColumnId}`,
+      success: function(response) {
+        console.log("Card moved:", response);
+        // 카드 이동 후 UI 업데이트 작업을 수행합니다.
+      },
+      error: function(error) {
+        console.error("Error moving card:", error);
+      }
+    });
+  }
 </script>
 </body>
 </html>

@@ -1,22 +1,26 @@
 package com.rooi.rooi.controller;
 
 import com.rooi.rooi.dto.BoardResponseDto;
+import com.rooi.rooi.dto.CardResponseDto;
 import com.rooi.rooi.service.BoardService;
+import com.rooi.rooi.service.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.rooi.rooi.dto.InviteResponseDto;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
 @Controller
 public class ViewController {
 
-
     @Autowired
     private BoardService boardService;
+    @Autowired
+    private CardService cardService;
 
     //보드를 생성함면 보이는 보드페이지 이때 주소는 /boards/{id} 이지만 데이터는 해당 보드의 칼럼과 카드를 모두 가져온다
     @GetMapping("/boards/{id}")
@@ -64,7 +68,7 @@ public class ViewController {
         return "cards";
     }
   
-      @GetMapping("/home/createcard")
+      @GetMapping("/createcard")
     public String createCardPage() {
         return "createcard";
     }
@@ -83,4 +87,29 @@ public class ViewController {
         model.addAttribute("inviteUserList", inviteUserList);
         return "manageUser"; // manageUser.html 뷰 페이지로 이동
     }
+
+    //카드 상세 페이지
+    @GetMapping("/{columnId}/card/{cardId}")
+    public String cardDetail(@PathVariable Long columnId, @PathVariable Long cardId, Model model) {
+        CardResponseDto card = cardService.getCard(cardId);
+
+        model.addAttribute("columnId", columnId);
+        model.addAttribute("card", card);
+        return "cards"; // manageUser.html 뷰 페이지로 이동
+    }
+
+
+    @GetMapping("/card/{id}")
+    public ModelAndView showEditCardPage(@PathVariable Long id) {
+        ModelAndView modelAndView = new ModelAndView("editCard"); // Assumes that the view name is "editCard"
+        // You might want to pass the id to the view if needed
+        modelAndView.addObject("cardId", id);
+        return modelAndView;
+    }
 }
+
+//    @GetMapping("/boards/api/{boardId}/card/{cardId}")
+//    public String showCard(@PathVariable Long boardId, @PathVariable Long cardId, Model model) {
+//        return "cards";
+//    }
+

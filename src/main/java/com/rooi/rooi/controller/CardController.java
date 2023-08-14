@@ -7,6 +7,7 @@ import com.rooi.rooi.dto.WorkerRequestDto;
 import com.rooi.rooi.security.UserDetailsImpl;
 import com.rooi.rooi.service.CardService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@Slf4j
 public class CardController {
     private final CardService cardService;
 
@@ -29,6 +31,14 @@ public class CardController {
     }
 
     // 카드 조회 -> 컬럼에서 조회
+
+    // 카드 조회 API
+    @GetMapping("/card/{cardId}")
+    public ResponseEntity<CardResponseDto> getCard(@PathVariable Long cardId) {
+        CardResponseDto cardResponseDto = cardService.getCard(cardId);
+        return new ResponseEntity<>(cardResponseDto, HttpStatus.OK);
+    }
+
 
     // 카드 수정 API
     @PutMapping("/card/{id}")
@@ -55,6 +65,7 @@ public class CardController {
     // 작업자 추가 API
     @PostMapping("/card/{cardId}/worker")
     public ResponseEntity<ApiResponseDto> addWorker(@PathVariable Long cardId, @RequestBody WorkerRequestDto workerRequestDto) {
+        log.info(workerRequestDto.getWorker());
         try {
             cardService.addWorker(cardId, workerRequestDto);
         } catch (NullPointerException | IllegalArgumentException e) {
