@@ -123,19 +123,25 @@
         <div style="margin-bottom: 10px">Comments</div>
         <div class="comment-list" style="margin-bottom: 10px">
             <ul th:each="comment : ${card.commentList}" style="border-bottom: solid 1px gray; padding-bottom: 15px">
-                    <span th:text="${comment.username}"></span> : <span th:text="${comment.content}"></span>
+                <span th:text="${comment.username}"></span> : <span th:text="${comment.content}"></span>
                 <div style="float: right">
-                    <button type="submit" class="btn btn-dark" id="comment-update-btn" onclick="" style="width: 55px; font-size: 12px">수 정</button>
-                    <button type="submit" class="btn btn-dark" id="comment-delete-btn" onclick="deleteComment()" style="width: 55px; font-size: 12px">삭 제</button>
+                    <button type="submit" class="comment-update-btn" id="comment-update-btn"
+                        th:attr="data-comment-id=${comment.id}" onclick="editComment(this.getAttribute('data-comment-id'))" style="width: 55px; font-size: 12px">수 정</button>
+                    <button type="submit" class="comment-delete-btn" id="comment-delete-btn" th:attr="data-comment-id=${comment.id}" style="width: 55px; font-size: 12px">삭 제</button>
+                </div>
+
+                <div th:id="'edit-box-' + ${comment.id}" style="margin-top: 20px; border-top: solid 1px gray; padding-top: 10px; display: none">
+                    <input class="content form-control col-sm-5" th:id="'input-edit-comment-' + ${comment.id}" style="width: 70%; height: 25px">
+                    <div style="float: right">
+                        <button type="submit" class="btn btn-dark" id="comment-edit-btn" th:attr="data-comment-id=${comment.id}" onclick="editCommentConfirm(this.getAttribute('data-comment-id'))" style="width: 55px; font-size: 12px;">확 인</button>
+                        <button type="submit" class="btn btn-dark" id="comment-edit-cancel-btn" th:attr="data-comment-id=${comment.id}" onclick="editComment(this.getAttribute('data-comment-id'))" style="width: 55px; font-size: 12px;">취 소</button>
+                    </div>
                 </div>
             </ul>
-        </div>
         <div>
             <input type="text" id="comment-input" placeholder="Enter your comment" style="width: 80%; height: 30px">
             <button onclick="addComment()" style="height: 30px; float: right ">Add Comment</button>
         </div>
-
-
     </div>
 
     <div class="modal" id="myModal">
@@ -349,7 +355,80 @@
         window.location.href = `/card/${cardId}`
     }
 
+    // 댓글 삭제
+    document.addEventListener('DOMContentLoaded', () => {
+        const deleteButtons = document.querySelectorAll('.comment-delete-btn');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const commentId = button.getAttribute('data-comment-id');
+                // deleteComment(commentId);
+                console.log(commentId)
+                const confirmDelete = confirm('이 댓글을 삭제하시겠습니까?');
+                if (confirmDelete) {
+                    $.ajax({
+                        type: "DELETE",
+                        url:'/api/card/comment/'+commentId,
+                        dataType:"json"
+                    }).done(function(res){
+                        console.log(res)
+                        console.log(res.status)
+                        if (res.statusCode === 200) {
+                            alert(res.message)
+                            window.location.reload();
+                        } else if (res.statusCode === 400) {
+                            alert(res.message)
+                        }
+                    }).fail(function (request, status, error){
+                        console.log(status)
+                        console.log(error)
+                        alert("에러가 발생했습니다.");
+                    });
+                }
+            });
+        });
+    });
 
+
+    // 댓글 수정
+    function editComment(commentId) {
+        if (document.getElementById('edit-box-'+ commentId).style.display === 'none') {
+            document.getElementById('edit-box-'+ commentId).style.display = 'block'
+        } else if (document.getElementById('edit-box-'+ commentId).style.display === 'block') {
+            document.getElementById('edit-box-'+ commentId).style.display = 'none'
+        }
+    }
+
+    function editCommentConfirm(comment_id) {
+        const commentId = comment_id;
+        // deleteComment(commentId);
+        console.log(commentId)
+        let data = {
+            card_id: getCardIdFromURL(),
+            content: document.getElementById('input-edit-comment-'+comment_id).value
+        };
+        console.log(data.content)
+
+        $.ajax({
+            type: "PUT",
+            url:'/api/card/comment/'+commentId,
+            data : JSON.stringify(data),
+            contentType:"application/json; charset=urf-8",
+            dataType:"json"
+        }).done(function(res){
+            console.log(res)
+            console.log(res.status)
+            if (res.statusCode === 200) {
+                alert(res.message)
+                window.location.reload();
+            } else if (res.statusCode === 400) {
+                alert(res.message)
+            }
+        }).fail(function (request, status, error){
+            console.log(status)
+            console.log(error)
+            alert("에러가 발생했습니다.");
+        });
+    }
 </script>
 </body>
 </html>
