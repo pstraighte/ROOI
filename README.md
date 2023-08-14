@@ -3,13 +3,20 @@
 - 1.프로젝트 구상
     1. **프로젝트명 :  ROOI (running out of ideas)**
     2. 프로젝트 내용 : 아이디어고갈이라는 팀명에서 따온 프로젝트명, 협업을 통해 아이디어 고갈에서 탈출하자는 취지를 가지고 있습니다. 칸반보드 타입의 협업 사이트 만들기
+
+
  
   2.API
   https://www.notion.so/691e86ee4e8247a7a1f56e5250a6ba3b?v=7cef32bf6a3748839d50591363a2ca36&pvs=4
 
 
+
+
+
   3.ERD
   https://miro.com/app/board/uXjVMwJrBRA=/
+
+
 
   4.필수구현 목록
 
