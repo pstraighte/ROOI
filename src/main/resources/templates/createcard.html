@@ -36,7 +36,8 @@
             -moz-appearance: none;
             appearance: none;
         }
-        label{
+
+        label {
             display: block;
             margin: 10px auto;
             width: 90%;
@@ -48,11 +49,8 @@
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
-            background-color: #f0f0f0; /* 바탕색 회색으로 변경 */
+            background-color: #f0f0f0;
             color: white;
-
-
-
         }
 
         textarea {
@@ -66,7 +64,7 @@
         }
 
         label {
-            color: #888; /* 연한 회색 */
+            color: #888;
         }
 
         button {
@@ -97,15 +95,13 @@
         <label for="color">Color</label>
         <input type="color" id="color" name="color">
 
-        <label for="worker">Worker</label>
-        <input type="text" id="worker" name="worker">
-
         <!-- 컬럼 ID를 동적으로 가져와서 설정 -->
         <input type="hidden" id="columnId" value="">
 
         <button type="submit">Create Card</button>
     </form>
 </div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const createCardForm = document.getElementById('createCardForm');
@@ -123,15 +119,13 @@
             const description = document.getElementById('description').value;
             const deadLine = document.getElementById('deadLine').value;
             const color = document.getElementById('color').value;
-            const worker = document.getElementById('worker').value;
             const columnId = columnIdInput.value;
 
             const requestData = {
                 title: title,
                 description: description,
                 deadLine: deadLine,
-                color: color,
-                worker: worker
+                color: color
             };
 
             try {
@@ -147,9 +141,8 @@
                     const responseData = await response.json();
                     console.log('Card created:', responseData);
                     alert('카드가 생성되었습니다.');
-                    window.close(); // 창을 닫습니다.
+                    window.close();
                     window.opener.location.reload();
-
                 } else {
                     console.error('Error creating card');
                 }

@@ -50,9 +50,6 @@
       appearance: none;
       background-color: #f0f0f0; /* 바탕색 회색으로 변경 */
       color: white;
-
-
-
     }
 
     textarea {
@@ -97,9 +94,6 @@
     <label for="color">Color</label>
     <input type="color" id="color" name="color">
 
-    <label for="worker">Worker</label>
-    <input type="text" id="worker" name="worker">
-
     <button type="submit">Save Changes</button>
   </form>
 </div>
@@ -123,7 +117,6 @@
               document.getElementById('description').value = card.description;
               document.getElementById('deadLine').value = card.deadLine;
               document.getElementById('color').value = card.color;
-              document.getElementById('worker').value = card.worker;
             });
 
     editCardForm.addEventListener('submit', async function(event) {
@@ -133,14 +126,12 @@
       const description = document.getElementById('description').value;
       const deadLine = document.getElementById('deadLine').value;
       const color = document.getElementById('color').value;
-      const worker = document.getElementById('worker').value;
 
       const requestData = {
         title: title,
         description: description,
         deadLine: deadLine,
-        color: color,
-        worker: worker
+        color: color
       };
 
       try {
